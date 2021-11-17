@@ -1,0 +1,20 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-service
+  namespace: 0aps
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/use-regex: 'true'
+spec:
+  rules:
+    - host: artwork.com
+      http:
+        paths:
+          - path: /artworks/?(.*)
+            pathType: Prefix
+            backend:
+              service:
+                name: artwork-service
+                port:
+                  number: 3000

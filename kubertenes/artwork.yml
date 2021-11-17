@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: artwork-deployment
+  namespace: 0aps
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: artwork
+  template:
+    metadata:
+      labels:
+        app: artwork
+    spec:
+      containers:
+        - name: artwork
+          image: ghcr.io/0aps/artwork
+          env:
+            - name: NAME
+              value: 'artwork'
+            - name: PORT
+              value: '3000'
+            - name: SERVER_TIMEOUT
+              value: '20000'
+            - name: DB_URI
+              value: 'mongodb://artwork-db-service:27017/artwork?retryWrites=true&w=majority'
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: artwork-service
+  namespace: 0aps
+spec:
+  selector:
+    app: artwork
+  ports:
+    - name: artwork
+      protocol: TCP
+      port: 3000
+      targetPort: 3000

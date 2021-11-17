@@ -1,0 +1,51 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: artwork-db-pvc
+  namespace: 0aps
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 256Mi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: artwork-db-deployment
+  namespace: 0aps
+spec:
+  selector:
+    matchLabels:
+      app: artwork-db
+  template:
+    metadata:
+      labels:
+        app: artwork-db
+    spec:
+      containers:
+        - name: artwork-db
+          image: mongo
+          ports:
+            - containerPort: 27017
+              protocol: TCP
+          volumeMounts:
+            - name: storage
+              mountPath: /data/db
+      volumes:
+        - name: storage
+          persistentVolumeClaim:
+            claimName: artwork-db-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: artwork-db-service
+  namespace: 0aps
+spec:
+  selector:
+    app: artwork-db
+  ports:
+    - port: 27017
+      targetPort: 27017

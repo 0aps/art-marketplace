@@ -1,0 +1,53 @@
+name: CI Order
+
+on:
+  push:
+    paths:
+      - 'microservices/order/**'
+    branches:
+      - main
+  pull_request:
+    paths:
+      - 'microservices/order/**'
+    branches:
+      - main
+
+env:
+  NAME: order
+  PORT: 3000
+  SERVER_TIMEOUT: 20000
+  DB_URI: ${{ secrets.ORDER_DB_URI }}
+
+defaults:
+  run:
+    working-directory: microservices/order
+
+jobs:
+  lint:
+      name: Lint
+      runs-on: ubuntu-latest
+      steps:
+          - uses: actions/checkout@v2
+          - uses: actions/setup-node@v2
+            with:
+              node-version: '16'
+              cache: 'npm'
+              cache-dependency-path: ./microservices/order/package-lock.json
+
+          - run: npm ci
+          - run: npm run lint
+
+  test:
+      name: Test
+      runs-on: ubuntu-latest
+      needs: lint
+      steps:
+          - uses: actions/checkout@v2
+          - uses: actions/setup-node@v2
+            with:
+              node-version: '16'
+              cache: 'npm'
+              cache-dependency-path: ./microservices/order/package-lock.json
+
+          - run: npm ci
+          - run: npm test
