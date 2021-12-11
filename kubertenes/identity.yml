@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: identity-deployment
+  namespace: 0aps
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: identity
+  template:
+    metadata:
+      labels:
+        app: identity
+    spec:
+      containers:
+        - name: identity
+          image: ghcr.io/0aps/identity
+          env:
+            - name: NAME
+              value: 'identity'
+            - name: PORT
+              value: '3000'
+            - name: SERVER_TIMEOUT
+              value: '20000'
+            - name: DB_URI
+              value: 'mongodb://identity-db-service:27017/identity?retryWrites=true&w=majority'
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: identity-service
+  namespace: 0aps
+spec:
+  selector:
+    app: identity
+  ports:
+    - name: identity
+      protocol: TCP
+      port: 3000
+      targetPort: 3000

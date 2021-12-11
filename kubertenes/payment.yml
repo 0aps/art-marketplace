@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-deployment
+  namespace: 0aps
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: payment
+  template:
+    metadata:
+      labels:
+        app: payment
+    spec:
+      containers:
+        - name: payment
+          image: ghcr.io/0aps/payment
+          env:
+            - name: NAME
+              value: 'payment'
+            - name: PORT
+              value: '3000'
+            - name: SERVER_TIMEOUT
+              value: '20000'
+            - name: DB_URI
+              value: 'mongodb://payment-db-service:27017/payment?retryWrites=true&w=majority'
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: payment-service
+  namespace: 0aps
+spec:
+  selector:
+    app: payment
+  ports:
+    - name: payment
+      protocol: TCP
+      port: 3000
+      targetPort: 3000

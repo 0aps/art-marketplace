@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: certificate-deployment
+  namespace: 0aps
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: certificate
+  template:
+    metadata:
+      labels:
+        app: certificate
+    spec:
+      containers:
+        - name: certificate
+          image: ghcr.io/0aps/certificate
+          env:
+            - name: NAME
+              value: 'certificate'
+            - name: PORT
+              value: '3000'
+            - name: SERVER_TIMEOUT
+              value: '20000'
+            - name: DB_URI
+              value: 'mongodb://certificate-db-service:27017/certificate?retryWrites=true&w=majority'
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: certificate-service
+  namespace: 0aps
+spec:
+  selector:
+    app: certificate
+  ports:
+    - name: certificate
+      protocol: TCP
+      port: 3000
+      targetPort: 3000

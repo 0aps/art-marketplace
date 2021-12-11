@@ -3,6 +3,7 @@ import { StatusCodes } from 'http-status-codes';
 import app from './index.js';
 
 describe('Artwork API endpoints', () => {
+  const base = '/api/v1';
   let agent;
   beforeAll(() => {
     agent = request.agent(app.instance);
@@ -12,7 +13,7 @@ describe('Artwork API endpoints', () => {
   });
 
   test('should return the lists of artworks', async () => {
-    const response = await agent.get('/artworks');
+    const response = await agent.get(base + '/artworks');
     expect(response.statusCode).toBe(StatusCodes.OK);
     expect(response.body).toBeInstanceOf(Array);
   });

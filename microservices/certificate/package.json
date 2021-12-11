@@ -4,16 +4,19 @@
   "description": "Provides capability to manage artwork authenticity certificates.",
   "main": "src/index.js",
   "type": "module",
+  "author": "TeamTwo",
+  "license": "MIT",
   "scripts": {
     "start": "node src/index.js",
     "dev": "nodemon",
     "lint": "semistandard",
     "test": "NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --detectOpenHandles --testMatch='**/tests.js' --coverage"
   },
-  "author": "TeamTwo",
-  "license": "MIT",
+  "pre-commit": [
+    "lint"
+  ],
   "dependencies": {
-    "art-marketplace-common": "^1.0.1",
+    "art-marketplace-common": "^1.0.2",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "http-status-codes": "^2.1.4",
@@ -21,6 +24,7 @@
   },
   "devDependencies": {
     "jest": "^27.4.3",
+    "pre-commit": "^1.2.2",
     "semistandard": "^16.0.1",
     "supertest": "^6.1.6"
   },

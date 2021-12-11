@@ -1,7 +1,7 @@
 {
-  "name": "order-microservice",
+  "name": "frontend-microservice",
   "version": "1.0.0",
-  "description": "Provides capability to manage orders.",
+  "description": "Artwork react based web application.",
   "main": "src/index.js",
   "type": "module",
   "author": "TeamTwo",
@@ -16,7 +16,7 @@
     "lint"
   ],
   "dependencies": {
-    "art-marketplace-common": "^1.0.2",
+    "art-marketplace-common": "^1.0.1",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "http-status-codes": "^2.1.4",

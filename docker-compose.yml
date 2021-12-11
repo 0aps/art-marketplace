@@ -1,0 +1,79 @@
+version: "3.9"
+services:
+  artwork:
+    container_name: artwork
+    build:
+      context: microservices/artwork
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./microservices/artwork:/artwork
+      - ./microservices/artwork/node_modules:/artwork/node_modules
+
+  certificate:
+    container_name: certificate
+    build:
+      context: microservices/certificate
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    volumes:
+      - ./microservices/certificate:/certificate
+      - ./microservices/certificate/node_modules:/certificate/node_modules
+
+  identity:
+    container_name: identity
+    build:
+      context: microservices/identity
+      dockerfile: Dockerfile
+    ports:
+      - "3002:3002"
+    volumes:
+      - ./microservices/identity:/identity
+      - ./microservices/identity/node_modules:/identity/node_modules
+
+  order:
+    container_name: order
+    build:
+      context: microservices/order
+      dockerfile: Dockerfile
+    ports:
+      - "3003:3003"
+    volumes:
+      - ./microservices/order:/order
+      - ./microservices/order/node_modules:/order/node_modules
+
+  payment:
+    container_name: payment
+    build:
+      context: microservices/payment
+      dockerfile: Dockerfile
+    ports:
+      - "3004:3004"
+    volumes:
+      - ./microservices/payment:/payment
+      - ./microservices/payment/node_modules:/payment/node_modules
+
+  frontend:
+    image: nginx:latest
+    container_name: frontend
+    volumes:
+      - ./microservices/frontend:/frontend
+      - ./config/nginx/nginx-frontend.conf:/etc/nginx/conf.d/nginx-frontend.conf
+
+  gateway:
+    image: nginx:latest
+    container_name: proxy
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./config/nginx/nginx-gateway.conf:/etc/nginx/conf.d/nginx-gateway.conf
+    depends_on:
+      - artwork
+      - certificate
+      - identity
+      - order
+      - payment
+      - frontend
+

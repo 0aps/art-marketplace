@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-deployment
+  namespace: 0aps
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: order
+  template:
+    metadata:
+      labels:
+        app: order
+    spec:
+      containers:
+        - name: order
+          image: ghcr.io/0aps/order
+          env:
+            - name: NAME
+              value: 'order'
+            - name: PORT
+              value: '3000'
+            - name: SERVER_TIMEOUT
+              value: '20000'
+            - name: DB_URI
+              value: 'mongodb://order-db-service:27017/order?retryWrites=true&w=majority'
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: order-service
+  namespace: 0aps
+spec:
+  selector:
+    app: order
+  ports:
+    - name: order
+      protocol: TCP
+      port: 3000
+      targetPort: 3000
