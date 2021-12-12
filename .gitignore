@@ -105,3 +105,6 @@ dist
 
 # Jetbrains
 .idea
+
+# Mac files
+.DS_Store
