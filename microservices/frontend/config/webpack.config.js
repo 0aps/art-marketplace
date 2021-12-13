@@ -9,6 +9,7 @@ const config = {
   },
   devServer: {
     open: true,
+    hot: true,
     host: 'localhost'
   },
   plugins: [

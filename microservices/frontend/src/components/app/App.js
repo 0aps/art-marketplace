@@ -24,14 +24,14 @@ export function App () {
           <Header />
           <Routes>
             <Route
-              exact path='/login' render={
-                <GuestOnlyRoute serIsLogged={userIsLogged}>
+              exact path='/login' element={
+                <GuestOnlyRoute userIsLogged={userIsLogged}>
                   <LoginPage />
                 </GuestOnlyRoute>
             }
             />
             <Route
-              exact path='/register' render={
+              exact path='/register' element={
                 <GuestOnlyRoute userIsLogged={userIsLogged}>
                   <RegisterPage />
                 </GuestOnlyRoute>

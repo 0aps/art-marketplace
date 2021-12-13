@@ -1,4 +1,4 @@
 
 export function RegisterPage () {
-  return <div />;
+  return <div><h1>Register</h1></div>;
 }

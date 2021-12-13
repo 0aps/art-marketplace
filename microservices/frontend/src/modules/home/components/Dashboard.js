@@ -1,4 +1,4 @@
 
 export function Dashboard () {
-  return <div />;
+  return <div><h1>Dashboard</h1></div>;
 }
