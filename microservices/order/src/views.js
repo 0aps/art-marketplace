@@ -1,31 +1,19 @@
-import { Order } from './models.js';
-import { StatusCodes } from 'http-status-codes';
+import {list_all_order, read_a_order, create_a_order, update_a_order, delete_a_order} from './controller/order_controller.js';
 
 export default [{
   url: '/orders',
   methods: {
-    get: async (req, res) => {
-      const records = await Order.find({});
-      res.json(records);
-    },
-    post: async (req, res) => {
-      const artwork = new Order({
-        name: req.body.name
-      });
-
-      await artwork.save();
-      res.sendStatus(StatusCodes.OK);
-    }
+    get: list_all_order,
+    post:create_a_order,
   },
   children: {
     item: {
       url: '/:orderId',
       methods: {
-        get: (req, res, next) => {
-          res.json({
-            test: 'mychild'
-          });
-        }
+        get: read_a_order, 
+        put: update_a_order,
+        delete:delete_a_order,
+
       }
     }
   }
