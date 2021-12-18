@@ -1,16 +1,17 @@
-import axios from 'axios';
 import { HashRouter, Route, Routes, Navigate } from 'react-router-dom';
 import { store } from '../../state/store';
 import api from '../../api';
 import { useStoreWithInitializer } from '../../state/storeHooks';
 import { Footer } from '../Footer/Footer';
 import { Header } from '../Header/Header';
-import { endLoad, loadUser } from './App.slice';
+import { endLoad, loadUser, logoutUser } from './App.slice';
 import { HomePage } from '../../modules/home/HomePage';
 import { LoginPage } from '../../modules/login/LoginPage';
 import { RegisterPage } from '../../modules/login/RegisterPage';
+import { ConfirmationPage } from '../../modules/login/ConfirmationPage';
 import { AdminPage } from '../../modules/admin/AdminPage';
 import { RestorePage } from '../../modules/login/RestorePage';
+import { ToastContainer } from 'react-toastify';
 
 export function App () {
   const { loading, user } = useStoreWithInitializer(({ app }) => app, load);
@@ -21,7 +22,8 @@ export function App () {
     <HashRouter>
       {!loading && (
         <>
-          <Header />
+          <ToastContainer />
+          <Header user={user} logout={logout} />
           <Routes>
             <Route
               exact path='/login' element={
@@ -38,14 +40,21 @@ export function App () {
             }
             />
             <Route
-              exact path='/restore/:key' render={
+              exact path='/confirmation' element={
+                <GuestOnlyRoute userIsLogged={userIsLogged}>
+                  <ConfirmationPage />
+                </GuestOnlyRoute>
+            }
+            />
+            <Route
+              exact path='/restore' element={
                 <GuestOnlyRoute userIsLogged={userIsLogged}>
                   <RestorePage />
                 </GuestOnlyRoute>
             }
             />
             <Route
-              exact path='/admin' render={
+              exact path='/admin' element={
                 <UserOnlyRoute userIsLogged={userIsLogged}>
                   <AdminPage />
                 </UserOnlyRoute>
@@ -67,13 +76,18 @@ async function load () {
     store.dispatch(endLoad());
     return;
   }
-  axios.defaults.headers.Authorization = `Token ${token}`;
 
   try {
     store.dispatch(loadUser(await api.identity.me()));
   } catch {
     store.dispatch(endLoad());
   }
+}
+
+async function logout () {
+  localStorage.removeItem('token');
+  location.hash = '#/login';
+  store.dispatch(logoutUser());
 }
 
 function GuestOnlyRoute ({

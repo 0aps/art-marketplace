@@ -20,6 +20,7 @@ function handleOnSubmit (params) {
   const { event, onSubmit } = params;
   event.preventDefault();
   if (isFormInValid(params)) {
+    document.querySelectorAll(':invalid').forEach(item => item.classList.add('is-invalid'));
     toast.error('Revisa los errores del formulario y vuelve a intentar.');
     return;
   }
@@ -42,6 +43,7 @@ function handleOnInputChange ({ event, state, setState, getErrorMessage = () => 
   attrErrorObj[eventTarget.name] = getGenericErrorMessage(eventObj).concat(getErrorMessage(eventObj) ?? []);
 
   setState(state => ({
+    ...state,
     model: { ...state.model, ...attrObj },
     error: { ...state.error, ...attrErrorObj }
   }));
@@ -64,6 +66,10 @@ function getGenericErrorMessage ({ value, element }) {
 
   if (element.name === 'email' && !Validator.validateEmail(value)) {
     error.push('Email no es valido, por favor verifica.');
+  }
+
+  if (element.type === 'tel' && element.pattern && !element.checkValidity()) {
+    error.push('Debes introducir solamente números');
   }
 
   return error;

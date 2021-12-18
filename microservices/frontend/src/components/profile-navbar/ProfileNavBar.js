@@ -5,7 +5,7 @@ export function ProfileNavBar (props) {
   return (
     <>
       <ProfileModal user={props.user} />
-      <NavBar user={props.user} />
+      <NavBar user={props.user} logout={props.logout} />
     </>
   );
 }
