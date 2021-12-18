@@ -3,6 +3,7 @@ import { StatusCodes } from 'http-status-codes';
 
 export default [{
   url: '/certificates',
+  access: 'public',
   methods: {
     get: async (req, res) => {
       const records = await Certificate.find({});

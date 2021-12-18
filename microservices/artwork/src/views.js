@@ -3,6 +3,7 @@ import { StatusCodes } from 'http-status-codes';
 
 export default [{
   url: '/artworks',
+  access: 'public',
   methods: {
     get: async (req, res) => {
       const records = await Artwork.find({});

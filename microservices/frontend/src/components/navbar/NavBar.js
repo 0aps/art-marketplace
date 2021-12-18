@@ -5,7 +5,7 @@ import {
   DropdownToggle, NavbarToggler, Collapse
 } from 'reactstrap';
 
-export function NavBar ({ user }) {
+export function NavBar ({ user, logout }) {
   return (
     <Navbar
       color='dark'
@@ -30,7 +30,7 @@ export function NavBar ({ user }) {
           </NavItem>
         </Nav>
         <Nav navbar>
-          {user ? <UserLinks user={user} /> : <GuestLinks />}
+          {user ? <UserLinks user={user} logout={logout} /> : <GuestLinks />}
         </Nav>
       </Collapse>
     </Navbar>
@@ -50,7 +50,7 @@ function GuestLinks () {
   );
 }
 
-function UserLinks ({ user }) {
+function UserLinks ({ user, logout }) {
   return (
     <>
       <NavItem>
@@ -72,7 +72,7 @@ function UserLinks ({ user }) {
             </Link>
           </DropdownItem>
           <DropdownItem divider />
-          <DropdownItem>Salir</DropdownItem>
+          <DropdownItem onClick={logout}>Salir</DropdownItem>
         </DropdownMenu>
       </UncontrolledDropdown>
     </>

@@ -15,15 +15,19 @@ class IdentityAPI extends Base {
   }
 
   signup (payload) {
-    return this.apiClient.post(this.base, payload);
+    return this.apiClient.post(`${this.base}/register`, payload);
   }
 
-  forgetPassword (email) {
-    return this.apiClient.post(`${this.base}/forgetPassword`, { email });
+  confirmUser (payload) {
+    return this.apiClient.post(`${this.base}/confirm`, payload);
   }
 
-  restorePassword (key, payload) {
-    return this.apiClient.patch(`${this.base}/restorePassword/${key}`, payload);
+  forgotPassword (email) {
+    return this.apiClient.post(`${this.base}/forgotPassword`, { email });
+  }
+
+  restorePassword (payload) {
+    return this.apiClient.post(`${this.base}/restore`, payload);
   }
 
   me () {
