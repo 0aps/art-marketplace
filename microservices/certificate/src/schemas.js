@@ -4,6 +4,9 @@ const { Schema, SchemaTypes } = mongoose;
 
 export default {
   Certificate: new Schema({
-    name: SchemaTypes.String
+    artName: SchemaTypes.String,
+    artID: SchemaTypes.String,
+    certificatePath: SchemaTypes.String,
+    creationDate: SchemaTypes.Date
   })
 };
