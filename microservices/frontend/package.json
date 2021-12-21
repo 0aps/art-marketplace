@@ -25,9 +25,11 @@
     "font-awesome": "^4.7.0",
     "query-string": "^7.0.1",
     "react": "^17.0.2",
+    "react-bootstrap-sweetalert": "^5.2.0",
     "react-dom": "^17.0.2",
     "react-redux": "^7.2.6",
     "react-router-dom": "^6.1.1",
+    "react-toastify": "^8.1.0",
     "reactstrap": "^9.0.1",
     "redux": "^4.1.2"
   },
@@ -59,7 +61,8 @@
       "jest"
     ],
     "global": [
-      "localStorage"
+      "localStorage",
+      "location"
     ]
   },
   "babel": {
