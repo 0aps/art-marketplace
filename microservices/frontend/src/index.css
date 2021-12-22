@@ -70,3 +70,12 @@ nav li.dropdown.show.nav-item > div {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
+
+.grid-container {
+  display: grid;
+  grid-gap: 30px;
+  grid-template-columns: auto auto auto;
+}
+.grid-item {
+  text-align: center;
+}
