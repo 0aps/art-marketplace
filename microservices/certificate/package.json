@@ -16,7 +16,7 @@
     "lint"
   ],
   "dependencies": {
-    "art-marketplace-common": "^1.0.2",
+    "art-marketplace-common": "1.0.6",
     "dotenv": "^10.0.0",
     "express": "^4.17.1",
     "fs-extra": "^10.0.0",

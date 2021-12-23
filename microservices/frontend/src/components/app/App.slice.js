@@ -14,7 +14,7 @@ const slice = createSlice({
       state.user = user;
       state.loading = false;
     },
-    logout: (state) => {
+    logoutUser: (state) => {
       state.user = null;
     },
     endLoad: (state) => {
@@ -23,6 +23,6 @@ const slice = createSlice({
   }
 });
 
-export const { loadUser, logout, endLoad, initializeApp } = slice.actions;
+export const { loadUser, logoutUser, endLoad, initializeApp } = slice.actions;
 
 export default slice.reducer;

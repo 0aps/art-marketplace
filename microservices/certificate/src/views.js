@@ -17,6 +17,7 @@ function jsonParserID (stringValue) {
 
 export default [{
   url: '/certificates',
+  access: 'public',
   methods: {
     get: async (req, res) => {
       Certificate.findOne({ artID: req.body.id }, (err, data) => {

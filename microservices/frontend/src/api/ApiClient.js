@@ -68,12 +68,17 @@ export default class ApiClient {
       headers: this.extraHeaders
     }).then(res => {
       return res.data;
+    }).catch(err => {
+      if (err.response.data) {
+        throw Error(err.response.data.message);
+      }
+      throw err;
     });
   }
 
   _setExtraHeaders () {
     const defaultHeaders = {
-      Authorization: 'JWT ' + localStorage.getItem('token')
+      Authorization: 'Bearer ' + localStorage.getItem('token')
     };
     this.extraHeaders = { ...this.extraHeaders, ...defaultHeaders };
   }
