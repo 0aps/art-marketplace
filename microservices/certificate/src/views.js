@@ -35,7 +35,7 @@ export default [{
     },
     post: async (req, res) => {
       // The query has to be changed to the artwork one
-      Certificate.findOne({ name: req.body.name }, (err, data) => {
+      Certificate.findOne({ name: req.body.name }).lean().exec(async (err, data) => {
         if (err) {
           console.log(Date() + '-' + err);
           res.sendStatus(400);
@@ -46,21 +46,20 @@ export default [{
 
           const artID = jsonParserID(data);
 
-          const certificate = new Certificate({
-            artName: artName,
-            artID: artID,
-            certificatePath: 'documents/' + artName + '.pdf',
-            creationDate: new Date()
-          });
+          try {
+            const certificate = new Certificate({
+              artName: artName,
+              artID: artID,
+              certificatePath: 'documents/' + artName + '.pdf',
+              creationDate: new Date()
+            });
 
-          Certificate.create(certificate, (err) => {
-            if (err) {
-              console.log(Date() + ' - ' + err);
-              res.sendStatus(500);
-            } else {
-              res.sendStatus(StatusCodes.CREATED);
-            }
-          });
+            await certificate.save();
+            res.sendStatus(StatusCodes.CREATED);
+          } catch (e) {
+            res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e.message);
+          }
+  
         }
       });
     }
