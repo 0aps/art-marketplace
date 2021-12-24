@@ -108,3 +108,6 @@ dist
 
 # Mac files
 .DS_Store
+
+# Certificate pdf storage
+microservices/certificate/src/documents/
