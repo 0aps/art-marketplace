@@ -50,7 +50,7 @@
                 Certificado de Autenticidad
             </div>
             <div>
-                <img class="artwork" src="./photography-certificate-of-authenticity-template.jpg"  alt="Imagen de la Obra">
+                <img class="artwork" src="{{pictures}}"  alt="Imagen de la Obra">
             </div>
             <div>
                 <table class="desc">
@@ -65,17 +65,20 @@
                             {{name}} <br>
                             <br>
                             <b>Descripcion:</b><br>
-                            {{descripcion}}
+                            {{description}} <br>
+                            <br>
+                            <b>Categoria:</b><br>
+                            {{category.name}}
                         </td>
                         <td>
 
                         </td>
                         <td>
-                            <b>Artista:</b><br>
-                            {{autor.nombre}} {{autor.apellidos}} <br>
+                            <b>Usuario del Artista:</b><br>
+                            {{user.username}} <br>
                             <br>
                             <b>Fecha Creacion:</b><br>
-                            {{creacion}} <br>
+                            {{createdAt}} <br>
                             <br>
                             <b>Nº Certificado:</b><br>
                             {{certificateNumber}}
@@ -89,7 +92,7 @@
                 <tr>
                     <td>
                         <b>Firma del Artista:</b> <br>
-                        {{autor.nombre}} {{autor.apellidos}} <br>
+                        {{user.username}} <br>
                     </td>
                 </tr>
             </table>

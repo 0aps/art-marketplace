@@ -1,7 +1,9 @@
 import { Certificate } from './models.js';
 import { StatusCodes } from 'http-status-codes';
 import pdfCreation from './pdfCreation.js';
+import moment from 'moment';
 import fs from 'fs';
+import ArtworksResource from './artworksResource.js';
 
 function jsonParserName (stringValue) {
   const string = JSON.stringify(stringValue);
@@ -12,65 +14,93 @@ function jsonParserName (stringValue) {
 function jsonParserID (stringValue) {
   const string = JSON.stringify(stringValue);
   const objectValue = JSON.parse(string);
-  return objectValue._id;
+  return objectValue.id;
 }
 
 export default [{
   url: '/certificates',
-  access: 'public',
+  access: {
+    post: 'public',
+    put: 'public'
+  },
+  roles: {
+    post: ['admin', 'artist'],
+    put: ['admin', 'artist']
+  },
   methods: {
-    get: async (req, res) => {
-      Certificate.findOne({ artID: req.body.id }, (err, data) => {
-        if (err) {
-          console.log(Date() + '-' + err);
-          res.sendStatus(400);
-        } else {
-          const rs = fs.createReadStream('./' + data.certificatePath);
+    post: async (req, res) => {
+      const artworkId = req.body.id;
+      ArtworksResource.getArtworkById(artworkId).then(async (body) => {
+        console.log(body);
+        const data = JSON.parse(body);
+        const artName = jsonParserName(data);
+        pdfCreation.createPDF(artName, data);
 
-          res.setHeader('Content-Disposition', 'attachment; ' + data.artName + '.pdf');
+        const artID = jsonParserID(data);
 
-          rs.pipe(res);
-        }
+        const certificate = new Certificate({
+          artName: artName,
+          artID: artID,
+          certificatePath: './src/documents/' + artName + '.pdf',
+          creationDate: moment()
+        });
+
+        await certificate.save();
+        res.sendStatus(StatusCodes.CREATED);
+      }).catch((error) => {
+        console.log('error: ' + error);
+        res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
       });
     },
-    post: async (req, res) => {
-      // The query has to be changed to the artwork one
-      Certificate.findOne({ name: req.body.name }).lean().exec(async (err, data) => {
-        if (err) {
-          console.log(Date() + '-' + err);
-          res.sendStatus(400);
-        } else {
-          console.log(data);
-          const artName = jsonParserName(data);
-          pdfCreation.createPDF(artName, data);
+    put: async (req, res) => {
+      const artworkId = req.body.id;
+      ArtworksResource.getArtworkById(artworkId).then(async (body) => {
+        console.log(body);
+        const data = JSON.parse(body);
+        const artName = jsonParserName(data);
+        pdfCreation.createPDF(artName, data);
 
-          const artID = jsonParserID(data);
+        const artID = jsonParserID(data);
 
-          try {
-            const certificate = new Certificate({
-              artName: artName,
-              artID: artID,
-              certificatePath: 'documents/' + artName + '.pdf',
-              creationDate: new Date()
-            });
-
-            await certificate.save();
-            res.sendStatus(StatusCodes.CREATED);
-          } catch (e) {
-            res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e.message);
+        Certificate.updateOne({ artID: artworkId }, { artName: artID, certificatePath: './src/documents/' + artName + '.pdf' }, (err) => {
+          if (err) {
+            console.log(Date() + ' - ' + err);
+            res.sendStatus(500);
+          } else {
+            res.sendStatus(StatusCodes.OK);
           }
-  
-        }
+        });
+      }).catch((error) => {
+        console.log('error: ' + error);
+        res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
       });
     }
   },
   children: {
     item: {
-      url: '/:certificateId',
+      url: '/:artworkId',
+      access: {
+        get: 'public'
+      },
       methods: {
-        get: (req, res, next) => {
-          res.json({
-            test: 'mychild'
+        get: async (req, res) => {
+          const artworkId = req.params.artworkId;
+          Certificate.findOne({ artID: artworkId }, (err, data) => {
+            if (err) {
+              console.log(Date() + '-' + err);
+              res.sendStatus(400);
+            } else {
+              console.log(data);
+
+              if (!data) {
+                res.sendStatus(StatusCodes.NOT_FOUND);
+              }
+              const rs = fs.createReadStream('./' + data.certificatePath);
+
+              res.setHeader('Content-Disposition', 'attachment; ' + data.artName + '.pdf');
+
+              rs.pipe(res);
+            }
           });
         }
       }

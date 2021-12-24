@@ -6,7 +6,7 @@ import path from 'path';
 let certificateNumber = 1;
 
 const compile = async function (templateName, data) {
-  const filePath = path.join(process.cwd(), 'templates', `${templateName}.hbs`);
+  const filePath = path.join(process.cwd(), '/src/templates', `${templateName}.hbs`);
   if (!filePath) {
     throw new Error('Could not find template');
   }
@@ -19,13 +19,18 @@ class pdfCreation {
     const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
     const options = {
-      path: 'documents/' + artName + '.pdf',
+      path: './src/documents/' + artName + '.pdf',
       format: 'A4',
       printBackground: true
     };
 
     const newData = data;
 
+    const unixTime = newData.createdAt;
+    const date = new Date(unixTime * 1000);
+    console.log(date.toLocaleDateString('en-GB'));
+
+    newData.createdAt = date.toLocaleDateString('en-GB');
     newData.certificateNumber = certificateNumber;
 
     const content = await compile('certificate', newData);
