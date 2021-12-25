@@ -60,9 +60,7 @@ export default [{
         const artName = jsonParserName(data);
         pdfCreation.createPDF(artName, data);
 
-        const artID = jsonParserID(data);
-
-        Certificate.updateOne({ artID: artworkId }, { artName: artID, certificatePath: './src/documents/' + artName + '.pdf' }, (err) => {
+        Certificate.updateOne({ artID: artworkId }, { artName: artName, certificatePath: './src/documents/' + artName + '.pdf' }, (err) => {
           if (err) {
             console.log(Date() + ' - ' + err);
             res.sendStatus(500);
