@@ -9,7 +9,6 @@ export default [{
   url: '/artworks',
   access: {
     get: 'public',
-    post: 'public'
   },
   roles: {
     post: ['admin', 'artist']
