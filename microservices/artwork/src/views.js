@@ -8,7 +8,7 @@ import path from 'path';
 export default [{
   url: '/artworks',
   access: {
-    get: 'public',
+    get: 'public'
   },
   roles: {
     post: ['admin', 'artist']
