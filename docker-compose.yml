@@ -9,7 +9,7 @@ services:
       - "3000:3000"
     volumes:
       - ./microservices/artwork:/artwork
-      - ./microservices/artwork/node_modules:/artwork/node_modules
+      - /artwork/node_modules
 
   certificate:
     container_name: certificate
@@ -20,7 +20,7 @@ services:
       - "3001:3001"
     volumes:
       - ./microservices/certificate:/certificate
-      - ./microservices/certificate/node_modules:/certificate/node_modules
+      - /certificate/node_modules
 
   identity:
     container_name: identity
@@ -31,7 +31,7 @@ services:
       - "3002:3002"
     volumes:
       - ./microservices/identity:/identity
-      - ./microservices/identity/node_modules:/identity/node_modules
+      - /identity/node_modules
 
   order:
     container_name: order
@@ -42,7 +42,7 @@ services:
       - "3003:3003"
     volumes:
       - ./microservices/order:/order
-      - ./microservices/order/node_modules:/order/node_modules
+      - /order/node_modules
 
   payment:
     container_name: payment
@@ -53,7 +53,7 @@ services:
       - "3004:3004"
     volumes:
       - ./microservices/payment:/payment
-      - ./microservices/payment/node_modules:/payment/node_modules
+      - /payment/node_modules
 
   frontend:
     image: nginx:latest
