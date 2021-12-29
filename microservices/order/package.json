@@ -10,7 +10,7 @@
     "start": "node src/index.js",
     "dev": "nodemon",
     "lint": "semistandard",
-    "test": "NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --detectOpenHandles --testMatch='**/tests.js' --coverage"
+    "test": "PORT=4003 NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --detectOpenHandles --testMatch='**/tests.js' --coverage"
   },
   "pre-commit": [
     "lint"
