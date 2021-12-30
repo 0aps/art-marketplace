@@ -6,7 +6,7 @@ class ArtworkAPI extends Base {
     this.base = 'artworks';
   }
 
-  list(query){
+  list (query) {
     return this.apiClient.get(`${this.base}`, {}, query);
   }
 }

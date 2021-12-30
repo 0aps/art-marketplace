@@ -9,9 +9,9 @@ export default class Base {
     return this.apiClient.post(this.base, payload);
   }
 
-  update (id, user) {
+  update (id, record) {
     const url = [this.base, '/', id].join('');
-    return this.apiClient.patch(url, user);
+    return this.apiClient.patch(url, record);
   }
 
   delete (id) {

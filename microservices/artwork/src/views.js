@@ -16,7 +16,7 @@ export default [{
   methods: {
     get: async (req, res) => {
       const query = req.query;
-      const perPage = query.perPage ?? Constants.defaultPerPage;
+      const perPage = parseInt(query.perPage ?? Constants.defaultPerPage);
       const page = Math.max(0, query.page ?? 0);
       const [field, sort] = query.sort ? query.sort.split(',') : Constants.defaultSort;
 
