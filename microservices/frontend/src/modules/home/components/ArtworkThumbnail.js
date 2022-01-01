@@ -1,17 +1,20 @@
 import { Badge, Button, Card, CardBody, CardImg, CardSubtitle, CardText, CardTitle, Row } from 'reactstrap';
+import { Link } from 'react-router-dom';
 
 export function ArtworkThumbnail ({ artwork, onAddToCart }) {
   return (
     <Card className='grid-item'>
-      <CardImg
-        className='artwork-card-image'
-        alt='Card image cap'
-        src='https://picsum.photos/318/180'
-        top
-      />
+      <Link to={'/artwork/' + artwork.id}>
+        <CardImg
+          className='artwork-card-image'
+          alt='Card image cap'
+          src='https://picsum.photos/318/180'
+          top
+        />
+      </Link>
       <CardBody>
         <CardTitle tag='h4'>
-          {artwork.name}
+          <Link to={'/artwork/' + artwork.id}>{artwork.name}</Link>
         </CardTitle>
         <CardSubtitle
           className='mb-2 text-muted'

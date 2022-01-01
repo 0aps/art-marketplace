@@ -21,7 +21,7 @@ export function Dashboard () {
 
   return (state.loaded
     ? <Container>
-      <ListArtwork artworks={state.artworks} onAddToCart={onAddToCart} />
+      <ListArtwork artworks={state.artworks} onAddToCart={onAddToCart} className='py-5' />
       <Pagination listClassName='justify-content-center'>
         <PaginationItem>
           <PaginationLink
@@ -73,7 +73,7 @@ async function loadArtworks ({ state, setState }) {
   }
 }
 
-async function onAddToCart (item) {
+export async function onAddToCart (item) {
   const { app: { user }, cart: { id, items } } = store.getState();
   const userIsLogged = user != null;
 

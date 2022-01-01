@@ -1,10 +1,10 @@
-import { Container } from 'reactstrap';
 import { ArtworkThumbnail } from './ArtworkThumbnail';
+import classNames from 'classnames';
 
-export function ListArtwork ({ artworks, onAddToCart }) {
+export function ListArtwork ({ artworks, onAddToCart, className }) {
   return (
-    <Container className='grid-container py-5'>
+    <div className={classNames('grid-container', className)}>
       {artworks.map(artwork => <ArtworkThumbnail key={artwork.id} artwork={artwork} onAddToCart={onAddToCart} />)}
-    </Container>
+    </div>
   );
 }
