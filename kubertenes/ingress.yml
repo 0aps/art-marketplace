@@ -36,6 +36,13 @@ spec:
                 name: order-service
                 port:
                   number: 3000
+          - path: /api/v1/cart
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: order-service
+                port:
+                  number: 3000
           - path: /api/v1/payments
             pathType: ImplementationSpecific
             backend:

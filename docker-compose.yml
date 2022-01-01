@@ -62,6 +62,19 @@ services:
       - ./microservices/frontend:/frontend
       - ./config/nginx/nginx-frontend.conf:/etc/nginx/conf.d/nginx-frontend.conf
 
+  mongo:
+    image: mongo
+    container_name: mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - ./config/mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: artwork123
+      MONGO_INITDB_DATABASE: artwork
+
   gateway:
     image: nginx:latest
     container_name: proxy
@@ -70,6 +83,7 @@ services:
     volumes:
       - ./config/nginx/nginx-gateway.conf:/etc/nginx/conf.d/nginx-gateway.conf
     depends_on:
+      - mongo
       - artwork
       - certificate
       - identity

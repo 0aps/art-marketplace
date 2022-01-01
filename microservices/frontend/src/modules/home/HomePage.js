@@ -4,11 +4,9 @@ import { Routes, Route } from 'react-router-dom';
 
 export function HomePage () {
   return (
-    <main>
-      <Routes>
-        <Route exact path='/' element={<Dashboard />} />
-        <Route path='/artwork/:slug' element={<ArtworkPage />} />
-      </Routes>
-    </main>
+    <Routes>
+      <Route exact path='/' element={<Dashboard />} />
+      <Route path='/artwork/:slug' element={<ArtworkPage />} />
+    </Routes>
   );
 }
