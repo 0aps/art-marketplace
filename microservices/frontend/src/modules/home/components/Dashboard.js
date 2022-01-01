@@ -78,12 +78,16 @@ export async function onAddToCart (item) {
   const userIsLogged = user != null;
 
   if (userIsLogged) {
-    if (items.some($item => $item.id === item.id)) {
-      toast.error('Ya has agregado esta obra.');
+    if (user.role === 'collector') {
+      if (items.some($item => $item.id === item.id)) {
+        toast.error('Ya has agregado esta obra.');
+      } else {
+        await api.cart.update(id, { item: item });
+        store.dispatch(addItem(item));
+        toast.success(`Se agregó la obra '${item.name}' al carrito.`);
+      }
     } else {
-      await api.cart.update(id, { item: item });
-      store.dispatch(addItem(item));
-      toast.success(`Se agregó la obra '${item.name}' al carrito.`);
+      toast.error('Solamente los coleccionistas pueden comprar obras.');
     }
   } else {
     location.hash = '#/login';

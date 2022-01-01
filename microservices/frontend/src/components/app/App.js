@@ -14,6 +14,7 @@ import { RestorePage } from '../../modules/login/RestorePage';
 import { ToastContainer } from 'react-toastify';
 import { loadCart } from '../../modules/cart/Cart.slice';
 import { CartPage } from '../../modules/cart/CartPage';
+import { ProfilePage } from '../../modules/profile/ProfilePage';
 
 export function App () {
   const { loaded, user } = useStoreWithInitializer(({ app }) => app, load);
@@ -58,14 +59,21 @@ export function App () {
               />
               <Route
                 exact path='/admin' element={
-                  <UserOnlyRoute userIsLogged={userIsLogged}>
+                  <UserOnlyRoute userIsLogged={userIsLogged && user.role === 'admin'}>
                     <AdminPage />
                   </UserOnlyRoute>
               }
               />
               <Route
+                exact path='/profile' element={
+                  <UserOnlyRoute userIsLogged={userIsLogged && user.role !== 'admin'}>
+                    <ProfilePage />
+                  </UserOnlyRoute>
+              }
+              />
+              <Route
                 exact path='/cart' element={
-                  <UserOnlyRoute userIsLogged={userIsLogged}>
+                  <UserOnlyRoute userIsLogged={userIsLogged && user.role === 'collector'}>
                     <CartPage />
                   </UserOnlyRoute>
               }
@@ -90,10 +98,11 @@ async function load () {
 
   try {
     const user = await api.identity.me();
-    const cart = await api.cart.get();
-
+    if (user.role === 'collector') {
+      const cart = await api.cart.get();
+      store.dispatch(loadCart(cart));
+    }
     store.dispatch(loadUser(user));
-    store.dispatch(loadCart(cart));
   } catch {
     store.dispatch(endLoad());
   }

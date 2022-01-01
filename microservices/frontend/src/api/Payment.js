@@ -10,10 +10,12 @@ class PaymentAPI extends Base {
     // return this.apiClient.get(`${this.base}/cards`, {}, query);
     return [{
       id: 'abc123',
+      createdAt: 1640819792,
       last4: '4444'
     },
     {
       id: '123abc',
+      createdAt: 1640819792,
       last4: '5555'
     }];
   }
@@ -22,7 +24,7 @@ class PaymentAPI extends Base {
     // return this.apiClient.post(`${this.base}`, payload);
     return {
       id: 'idorder',
-      createdAt: 1641041356885,
+      createdAt: 1640819792,
       cart: {
         items: []
       },

@@ -56,11 +56,11 @@ function GuestLinks () {
 function UserLinks ({ user, logout, items }) {
   return (
     <>
-      <NavItem>
+      {user.role === 'collector' && <NavItem>
         <NavLink tag={Link} to='/cart'>
           <i className='fa fa-shopping-cart' /> Carrito <span className='badge bg-info mx-3'>{items.length}</span>
         </NavLink>
-      </NavItem>
+      </NavItem>}
       <NavItem>
         <div className='profile-picture'>
           <img
@@ -75,9 +75,14 @@ function UserLinks ({ user, logout, items }) {
         </DropdownToggle>
         <DropdownMenu>
           <DropdownItem>
-            <Link to='/admin'>
-              Administración
-            </Link>
+            {user.role === 'admin' &&
+              <Link to='/admin'>
+                Administración
+              </Link>}
+            {(user.role === 'artist' || user.role === 'collector') &&
+              <Link to='/profile'>
+                Mi cuenta
+              </Link>}
           </DropdownItem>
           <DropdownItem divider />
           <DropdownItem onClick={logout}>Salir</DropdownItem>
