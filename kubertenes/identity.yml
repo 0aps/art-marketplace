@@ -25,6 +25,8 @@ spec:
               value: '20000'
             - name: DB_URI
               value: 'mongodb://identity-db-service:27017/identity?retryWrites=true&w=majority'
+            - name: REDIS_URI
+              value: 'redis://redis-service:6379'
             - name: SECRET
               valueFrom:
                 secretKeyRef:
