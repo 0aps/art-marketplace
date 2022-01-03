@@ -56,11 +56,14 @@ services:
       - /payment/node_modules
 
   frontend:
-    image: nginx:latest
     container_name: frontend
+    build:
+      context: microservices/frontend
+      dockerfile: Dockerfile
     volumes:
       - ./microservices/frontend:/frontend
-      - ./config/nginx/nginx-frontend.conf:/etc/nginx/conf.d/nginx-frontend.conf
+      - ./microservices/frontend/config/nginx-frontend.conf:/etc/nginx/conf.d/nginx-frontend.conf
+      - /frontend/node_modules
 
   mongo:
     image: mongo
@@ -75,6 +78,12 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: artwork123
       MONGO_INITDB_DATABASE: artwork
 
+  redis:
+    container_name: redis
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+
   gateway:
     image: nginx:latest
     container_name: proxy
@@ -84,6 +93,7 @@ services:
       - ./config/nginx/nginx-gateway.conf:/etc/nginx/conf.d/nginx-gateway.conf
     depends_on:
       - mongo
+      - redis
       - artwork
       - certificate
       - identity

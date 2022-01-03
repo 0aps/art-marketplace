@@ -18,5 +18,15 @@ class CartModel {
 class OrderModel {
 }
 
+class UserModel {
+  toClient () {
+    return {
+      id: this._id,
+      username: this.username
+    };
+  }
+}
+
 export const Cart = mongoose.model('Cart', Schemas.Cart.loadClass(CartModel));
 export const Order = mongoose.model('Order', Schemas.Order.loadClass(OrderModel));
+export const User = mongoose.model('User', Schemas.User.loadClass(UserModel));
