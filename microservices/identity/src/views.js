@@ -11,9 +11,6 @@ import Constants from './constants.js';
 
 export default [{
   url: '/users',
-  access: {
-    post: 'public'
-  },
   roles: {
     get: ['admin']
   },
@@ -91,9 +88,10 @@ export default [{
             }
 
             const data = await existingActivation.getUserData();
-            await User.new(data);
+            const user = await User.new(data);
             await existingActivation.remove();
 
+            await res.publish('user-create', user);
             res.sendStatus(StatusCodes.CREATED);
           } catch (e) {
             res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(e.message);

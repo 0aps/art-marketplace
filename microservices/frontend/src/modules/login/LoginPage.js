@@ -7,6 +7,7 @@ import api from '../../api';
 import { store } from '../../state/store';
 import { loadUser } from '../../components/app/App.slice';
 import SweetAlert from 'react-bootstrap-sweetalert';
+import { loadCart } from '../cart/Cart.slice';
 
 export function LoginPage () {
   const { state, setState, onSubmit, onInputChange } = useForm({
@@ -97,6 +98,10 @@ async function handleOnSubmit ({ setState, state }) {
     const user = await api.identity.login(state.model);
     localStorage.setItem('token', user.token);
     location.hash = '#/';
+    if (user.role === 'collector') {
+      const cart = await api.cart.get();
+      store.dispatch(loadCart(cart));
+    }
     store.dispatch(loadUser(user));
   } catch (e) {
     toast.error(`Error al autenticarte. Por favor, trata otra vez. ${e.message}`);
