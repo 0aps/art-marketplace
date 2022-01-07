@@ -12,9 +12,9 @@ describe('Payment API endpoints', () => {
     return app.close();
   });
 
-  test('should return the lists of payments', async () => {
+  test('should return an error if not authenticated', async () => {
     const response = await agent.get(base + '/payments');
-    expect(response.statusCode).toBe(StatusCodes.OK);
-    expect(response.body).toBeInstanceOf(Array);
+    expect(response.statusCode).toBe(StatusCodes.UNAUTHORIZED);
+    expect(response.body).toHaveProperty('message');
   });
 });

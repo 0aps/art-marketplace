@@ -15,6 +15,7 @@ describe('Artwork API endpoints', () => {
   test('should return the lists of artworks', async () => {
     const response = await agent.get(base + '/artworks');
     expect(response.statusCode).toBe(StatusCodes.OK);
-    expect(response.body).toBeInstanceOf(Array);
+    expect(response.body).toBeInstanceOf(Object);
+    expect(response.body).toHaveProperty('records');
   });
 });

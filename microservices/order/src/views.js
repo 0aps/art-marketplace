@@ -1,20 +1,101 @@
 import {list_all_order, read_a_order, create_a_order, update_a_order, delete_a_order} from './controller/order_controller.js';
+import { InvalidRequest, RecordNotFound } from 'art-marketplace-common';
+import { StatusCodes } from 'http-status-codes';
+import { Cart, Order } from './models.js';
 
-export default [{
-  url: '/orders',
-  methods: {
-    get: list_all_order,
-    post:create_a_order,
+export default [
+  {
+    url: '/cart',
+    methods: {
+      get: async (req, res) => {
+        const user = req.app.locals.user;
+
+        try {
+          let cart = await Cart.findOne({ user: user.id, state: 'active' });
+          if (!cart) {
+            cart = new Cart({
+              user: user.id,
+              items: []
+            });
+            await cart.save();
+          }
+
+          res.status(StatusCodes.OK).json(cart.toClient());
+        } catch (e) {
+          res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(e.message);
+        }
+      }
+    },
+    children: {
+      item: {
+        url: '/:cartId',
+        methods: {
+          patch: async (req, res, next) => {
+            const cartId = req.params.cartId;
+            const { item } = req.body;
+
+            try {
+              const cart = await Cart.findById(cartId);
+              if (!cart) {
+                return next(new RecordNotFound());
+              }
+              if (!item) {
+                return next(new InvalidRequest('Debes espeficiar una obra para agregar al carrito.'));
+              }
+
+              cart.items.push(item);
+              await cart.save();
+
+              res.sendStatus(StatusCodes.OK);
+            } catch (e) {
+              res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(e.message);
+            }
+          }
+        },
+        children: {
+          item: {
+            url: '/:artworkId',
+            methods: {
+              delete: async (req, res, next) => {
+                const cartId = req.params.cartId;
+                const artworkId = req.params.artworkId;
+
+                const cart = await Cart.findById(cartId);
+                if (!cart) {
+                  return next(new RecordNotFound());
+                }
+
+                const hasItem = await Cart.hasItem(artworkId);
+                if (!hasItem) {
+                  return next(new InvalidRequest('La obra no está en el carrito.'));
+                }
+
+                cart.items = cart.items.filter($item => $item.id !== artworkId);
+                await cart.save();
+
+                res.sendStatus(StatusCodes.NO_CONTENT);
+              }
+            }
+          }
+        }
+      }
+    }
   },
-  children: {
-    item: {
-      url: '/:orderId',
-      methods: {
-        get: read_a_order, 
-        put: update_a_order,
-        delete:delete_a_order,
-
+  {
+    url: '/orders',
+    methods: {
+      get: list_all_order,
+      post:create_a_order,
+    },
+    children: {
+      item: {
+        url: '/:orderId',
+        methods: {
+          get: read_a_order, 
+          put: update_a_order,
+          delete:delete_a_order,
+        }
       }
     }
   }
-}];
+];

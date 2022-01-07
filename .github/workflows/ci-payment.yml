@@ -17,6 +17,7 @@ env:
   PORT: 3000
   SERVER_TIMEOUT: 20000
   DB_URI: ${{ secrets.PAYMENT_DB_URI }}
+  SECRET: ${{ secrets.JWT_SECRET }}
 
 defaults:
   run:
