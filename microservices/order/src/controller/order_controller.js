@@ -1,17 +1,30 @@
 import { Order } from '../models/models.js';
 import { StatusCodes } from 'http-status-codes';
 
-//get
+
+/**
+ * Método GET:
+ * este metodo devuelve un listado de todas las ordenes 
+ */
 export  async function list_all_order (req, res)  {
     const records = await Order.find({});
     res.json(records);
   };
 
-  //post
+/**
+ * Método POST:
+ * Crear la orden 
+ */
 export  async function create_a_order (req, res)  {
     var new_order = new Order(req.body);
-    await new_order.save();
-    res.sendStatus(StatusCodes.OK);
+
+    if(new_order.items.length === 0){
+      res.sendStatus(StatusCodes.BAD_REQUEST);
+    } else {
+      await new_order.save();
+      res.sendStatus(StatusCodes.OK);
+    }
+   
 };
 
 //get por el atributo id
