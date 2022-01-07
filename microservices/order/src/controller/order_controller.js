@@ -7,9 +7,9 @@ import { StatusCodes } from 'http-status-codes';
  * este metodo devuelve un listado de todas las ordenes 
  */
 export  async function list_all_order (req, res)  {
-    const records = await Order.find({});
-    res.json(records);
-  };
+  const records = await Order.find({});
+  res.json(records);
+};
 
 /**
  * Método POST:
@@ -27,13 +27,21 @@ export  async function create_a_order (req, res)  {
    
 };
 
-//get por el atributo id
+
+/**
+ * Método GET:
+ * Buscar por el atributo id 
+ */
   export  async function read_a_order(req, res)  {
     const record = await Order.findById(req.params.orderId)
     res.json(record);
   };
 
-//put
+
+/**
+ * Método PUT:
+ * Modificar una orden 
+ */
 export async function update_a_order (req, res)  {
     await Order.findOneAndUpdate(
         {_id:req.params.orderId},
@@ -42,7 +50,11 @@ export async function update_a_order (req, res)  {
     res.sendStatus(StatusCodes.OK);
 }
 
-//delete
+
+/**
+ * Método DELETE:
+ * Eliminar una orden 
+ */
 export async function delete_a_order (req, res) {
     await Order.remove(
         {
