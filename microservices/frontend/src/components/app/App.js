@@ -12,9 +12,17 @@ import { ConfirmationPage } from '../../modules/login/ConfirmationPage';
 import { AdminPage } from '../../modules/admin/AdminPage';
 import { RestorePage } from '../../modules/login/RestorePage';
 import { ToastContainer } from 'react-toastify';
+import { useState } from 'react';
+import React from 'react';
 
 export function App () {
   const { loading, user } = useStoreWithInitializer(({ app }) => app, load);
+  const [parentCallBack, setParentCallBack] = useState(false)
+
+  const onTrigger = (event) => {
+    event.preventDefault()
+    setParentCallBack(!parentCallBack)
+  }
 
   const userIsLogged = user != null;
 
@@ -23,7 +31,7 @@ export function App () {
       {!loading && (
         <>
           <ToastContainer />
-          <Header user={user} logout={logout} />
+          <Header user={user} logout={logout} onTrigger={onTrigger} parentCallBack={parentCallBack} setParentCallBack={setParentCallBack}/>
           <Routes>
             <Route
               exact path='/login' element={

@@ -2,10 +2,11 @@ import { Link } from 'react-router-dom';
 import {
   NavbarBrand, Navbar, Nav, NavItem, NavLink,
   UncontrolledDropdown, DropdownItem, DropdownMenu,
-  DropdownToggle, NavbarToggler, Collapse
+  DropdownToggle, NavbarToggler, Collapse,
 } from 'reactstrap';
+import React from 'react';
 
-export function NavBar ({ user, logout }) {
+export function NavBar ({ user, logout, onTrigger }) {
   return (
     <Navbar
       color='dark'
@@ -30,7 +31,7 @@ export function NavBar ({ user, logout }) {
           </NavItem>
         </Nav>
         <Nav navbar>
-          {user ? <UserLinks user={user} logout={logout} /> : <GuestLinks />}
+          {user ? <UserLinks user={user} logout={logout} onTrigger={onTrigger}/> : <GuestLinks />}
         </Nav>
       </Collapse>
     </Navbar>
@@ -50,16 +51,18 @@ function GuestLinks () {
   );
 }
 
-function UserLinks ({ user, logout }) {
+function UserLinks ({ user, logout, onTrigger }) {
   return (
     <>
       <NavItem>
-        <div className='profile-picture'>
-          <img
-            className='pp-user'
-            src='images/profile_placeholder.svg' alt='profile'
-          />
-        </div>
+        <button name="myname" onClick={onTrigger}>
+          <div className='profile-picture'>
+            <img
+              className='pp-user'
+              src='images/profile_placeholder.svg' alt='profile'
+            />
+          </div>
+        </button>
       </NavItem>
       <UncontrolledDropdown nav>
         <DropdownToggle nav caret>
