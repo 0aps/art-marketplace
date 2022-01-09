@@ -11,7 +11,6 @@ import { Cart } from './models/models.js';
 export default [
   {
     url: '/cart',
-    access: 'public',
     methods: {
       get: async (req, res) => {
         const user = req.app.locals.user;
@@ -95,7 +94,6 @@ export default [
       },
       orders: {
         url: '/orders',
-        access: 'public',
         methods: {
           get: listAllOrder
         },
@@ -104,8 +102,6 @@ export default [
             url: '/:orderId',
             methods: {
               get: readAnOrder,
-              put: updateAnOrder,
-              delete: deleteAnOrder
             }
           }
         }
