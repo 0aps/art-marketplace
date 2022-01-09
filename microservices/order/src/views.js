@@ -6,6 +6,7 @@ import { Cart } from './models/models.js';
 export default [
   {
     url: '/cart',
+    access: 'public',
     methods: {
       get: async (req, res) => {
         const user = req.app.locals.user;
@@ -78,23 +79,24 @@ export default [
             }
           }
         }
-      }
-    }
-  },
-  {
-    url: '/orders',
-    methods: {
-      get: list_all_order,
-    },
-    children: {
-      item: {
-        url: '/:orderId',
+      },
+      orders:  {
+        url: '/orders',
+        access: 'public',
         methods: {
-          get: read_a_order, 
-          put: update_a_order,
-          delete:delete_a_order,
+          get: list_all_order,
+        },
+        children: {
+          item: {
+            url: '/:orderId',
+            methods: {
+              get: read_a_order, 
+              put: update_a_order,
+              delete:delete_a_order,
+            }
+          }
         }
       }
     }
-  }
+  },
 ];
