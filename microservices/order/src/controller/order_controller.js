@@ -16,7 +16,16 @@ export  async function list_all_order (req, res)  {
  */
 export  async function create_a_order (payment)  {
   
-    var new_order = new Order(req.body);
+    var new_order = new Order({
+      id_user:'1234578',
+      items: [
+        {
+          id_artwork: 5341,
+          name: "Mona lisa",
+          precio: 455.54,
+        }
+      ]
+    });
 
     if(new_order.items.length === 0){
       res.sendStatus(StatusCodes.BAD_REQUEST);

@@ -1,6 +1,8 @@
-import { User } from './models.js';
+import { User } from './models/models.js';
+import {create_a_order} from './controller/order_controller.js';
 
-export default [{
+export default [
+  {
   service: 'identity',
   channels: [
     {
@@ -26,4 +28,15 @@ export default [{
       }
     }
   ]
-}];
+},
+{
+  service: 'payment',
+  channels: [
+    {
+      name: 'payment-success',
+      on: create_a_order
+    }
+  ]
+},
+
+];
