@@ -1,5 +1,5 @@
 import mongoose from 'mongoose';
-import Schemas from './schemas.js';
+import Schema from './schemas.js';
 
 class CartModel {
   static async hasItem (itemId) {
@@ -16,7 +16,13 @@ class CartModel {
 }
 
 class OrderModel {
-
+  toClient () {
+    return {
+      id: this._id,
+      id_user: this.id_user,
+      items: this.items
+    };
+  }
 }
 
 class UserModel {
@@ -28,6 +34,6 @@ class UserModel {
   }
 }
 
-export const Cart = mongoose.model('Cart', Schemas.Cart.loadClass(CartModel));
-export const Order = mongoose.model('Order', Schemas.Order.loadClass(OrderModel));
-export const User = mongoose.model('User', Schemas.User.loadClass(UserModel));
+export const Cart = mongoose.model('Cart', Schema.Cart.loadClass(CartModel));
+export const Order = mongoose.model('Order', Schema.Order.loadClass(OrderModel));
+export const User = mongoose.model('User', Schema.User.loadClass(UserModel));

@@ -12,10 +12,10 @@ export  async function list_all_order (req, res)  {
 };
 
 /**
- * Método POST:
  * Crear la orden 
  */
-export  async function create_a_order (req, res)  {
+export  async function create_a_order (payment)  {
+  
     var new_order = new Order(req.body);
 
     if(new_order.items.length === 0){
