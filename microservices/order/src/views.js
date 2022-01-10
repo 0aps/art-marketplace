@@ -1,8 +1,6 @@
 import {
   listAllOrder,
-  readAnOrder,
-  updateAnOrder,
-  deleteAnOrder
+  readAnOrder
 } from './controller/order_controller.js';
 import { InvalidRequest, RecordNotFound } from 'art-marketplace-common';
 import { StatusCodes } from 'http-status-codes';
@@ -101,7 +99,7 @@ export default [
           item: {
             url: '/:orderId',
             methods: {
-              get: readAnOrder,
+              get: readAnOrder
             }
           }
         }

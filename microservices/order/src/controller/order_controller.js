@@ -1,11 +1,11 @@
-import { Order } from "../models/models.js";
-import { StatusCodes } from "http-status-codes";
+import { Order } from '../models/models.js';
+import { StatusCodes } from 'http-status-codes';
 
 /**
  * Método GET:
  * este metodo devuelve un listado de todas las ordenes
  */
-export async function listAllOrder(req, res) {
+export async function listAllOrder (req, res) {
   const user = req.app.locals.user;
 
   const records = await Order.find({ id_user: user.id });
@@ -15,15 +15,15 @@ export async function listAllOrder(req, res) {
 /**
  * Crear la orden
  */
-export async function createAnOrder(payment) {
+export async function createAnOrder (payment) {
   const newOrder = new Order({
-    id_user: "1234578",
+    id_user: '1234578',
     items: [
       {
         id_artwork: 5341,
-        name: "Mona lisa",
-        precio: 455.54,
-      },
+        name: 'Mona lisa',
+        precio: 455.54
+      }
     ],
   });
 
@@ -35,7 +35,7 @@ export async function createAnOrder(payment) {
  * Método GET:
  * Buscar por el atributo id
  */
-export async function readAnOrder(req, res) {
+export async function readAnOrder (req, res) {
   const record = await Order.findById(req.params.orderId);
   res.json(record);
 }
@@ -44,7 +44,7 @@ export async function readAnOrder(req, res) {
  * Método PUT:
  * Modificar una orden
  */
-export async function updateAnOrder(req, res) {
+export async function updateAnOrder (req, res) {
   await Order.findOneAndUpdate({ _id: req.params.orderId }, req.body);
   res.sendStatus(StatusCodes.OK);
 }
@@ -53,9 +53,9 @@ export async function updateAnOrder(req, res) {
  * Método DELETE:
  * Eliminar una orden
  */
-export async function deleteAnOrder(req, res) {
+export async function deleteAnOrder (req, res) {
   await Order.remove({
-    _id: req.params.orderId,
+    _id: req.params.orderId
   });
   res.sendStatus(StatusCodes.OK);
 }
