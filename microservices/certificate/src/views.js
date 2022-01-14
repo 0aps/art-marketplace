@@ -1,3 +1,4 @@
+import {RecordNotFound} from 'art-marketplace-common';
 import { Certificate } from './models.js';
 import { StatusCodes } from 'http-status-codes';
 import pdfCreation from './pdfCreation.js';
@@ -19,19 +20,13 @@ function jsonParserID (stringValue) {
 
 export default [{
   url: '/certificates',
-  access: {
-    post: 'public',
-    put: 'public'
-  },
   roles: {
-    post: ['admin', 'artist'],
-    put: ['admin', 'artist']
+    post: ['admin', 'artist']
   },
   methods: {
     post: async (req, res) => {
       const artworkId = req.body.id;
       ArtworksResource.getArtworkById(artworkId).then(async (body) => {
-        console.log(body);
         const data = JSON.parse(body);
         const artName = jsonParserName(data);
         pdfCreation.createPDF(artName, data);
@@ -46,30 +41,8 @@ export default [{
         });
 
         await certificate.save();
-        res.sendStatus(StatusCodes.CREATED);
+        res.status(StatusCodes.CREATED).json(certificate.toClient());
       }).catch((error) => {
-        console.log('error: ' + error);
-        res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
-      });
-    },
-    put: async (req, res) => {
-      const artworkId = req.body.id;
-      ArtworksResource.getArtworkById(artworkId).then(async (body) => {
-        console.log(body);
-        const data = JSON.parse(body);
-        const artName = jsonParserName(data);
-        pdfCreation.createPDF(artName, data);
-
-        Certificate.updateOne({ artID: artworkId }, { artName: artName, certificatePath: './src/documents/' + artName + '.pdf' }, (err) => {
-          if (err) {
-            console.log(Date() + ' - ' + err);
-            res.sendStatus(500);
-          } else {
-            res.sendStatus(StatusCodes.OK);
-          }
-        });
-      }).catch((error) => {
-        console.log('error: ' + error);
         res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
       });
     }
@@ -80,26 +53,64 @@ export default [{
       access: {
         get: 'public'
       },
+      roles: {
+        put: ['admin', 'artist'],
+        delete: ['admin']
+      },
       methods: {
         get: async (req, res) => {
           const artworkId = req.params.artworkId;
           Certificate.findOne({ artID: artworkId }, (err, data) => {
             if (err) {
-              console.log(Date() + '-' + err);
-              res.sendStatus(400);
+              res.sendStatus(StatusCodes.BAD_REQUEST);
             } else {
-              console.log(data);
-
               if (!data) {
-                res.sendStatus(StatusCodes.NOT_FOUND);
+                return next(new RecordNotFound());
               }
               const rs = fs.createReadStream('./' + data.certificatePath);
-
+              res.sendStatus(StatusCodes.OK);
               res.setHeader('Content-Disposition', 'attachment; ' + data.artName + '.pdf');
-
               rs.pipe(res);
             }
           });
+        },
+        put: async (req, res) => {
+          const artworkId = req.params.artworkId;
+          ArtworksResource.getArtworkById(artworkId).then(async (body) => {
+            const data = JSON.parse(body);
+            const artName = jsonParserName(data);
+            pdfCreation.createPDF(artName, data);
+    
+            Certificate.updateOne({ artID: artworkId }, { artName: artName, certificatePath: './src/documents/' + artName + '.pdf' }, (err) => {
+              if (err) {
+                res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(err);
+              } else {
+                res.sendStatus(StatusCodes.OK);
+              }
+            });
+          }).catch((error) => {
+            res.sendStatus(StatusCodes.INTERNAL_SERVER_ERROR);
+          });
+        },
+        delete: async (req, res) => {
+          try {
+            const record = await Certificate.findById(req.params.artworkId);
+
+            if (!record) {
+              return next(new RecordNotFound());
+            }
+
+            fs.unlink(record.certificatePath, function (err) {
+              if (err) {
+                res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(err);
+              } else {
+                await record.remove();
+                res.sendStatus(StatusCodes.NO_CONTENT);
+              }
+            });
+          } catch (e) {
+            res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(e);
+          }
         }
       }
     }
