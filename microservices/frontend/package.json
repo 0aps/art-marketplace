@@ -5,10 +5,10 @@
   "main": "src/index.js",
   "repository": {
     "type": "git",
-    "url":"https://github.com/radhames22/art-marketplace.git"
+    "url":"https://github.com/radhames87/art-marketplace.git"
 
   },
-  "homepage": "https://github.com/radhames22/art-marketplace",
+  "homepage": "https://github.com/radhames87/art-marketplace",
   "author": "TeamTwo",
   "license": "MIT",
   "scripts": {
