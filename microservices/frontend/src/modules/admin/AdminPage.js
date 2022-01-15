@@ -27,14 +27,9 @@ export function AdminPage () {
   }
 
   async function onUserEdit (newUser, user) {
-    console.log(newUser);
-    console.log(user);
-    //setState((state) => ({ ...state, loaded: false }));
     try {
         await api.identity.put(user.id, newUser);
-        //setState((state) => ({users: state.users.filter((u) => u.id !== user.id), loaded: true }));
     } catch (e) {
-      //setState((state) => ({ ...state, loaded: true }));
       toast.error(`Error al modificar el usario. ${e.message}`);
     }
     return true;
