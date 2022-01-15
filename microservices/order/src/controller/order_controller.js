@@ -24,7 +24,7 @@ export async function createAnOrder (payment) {
         name: 'Mona lisa',
         precio: 455.54
       }
-    ],
+    ]
   });
 
   const order = await newOrder.save();
