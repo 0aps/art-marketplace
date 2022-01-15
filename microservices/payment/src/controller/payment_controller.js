@@ -3,12 +3,15 @@ dotenv.config();
 
 import stripeLib from "stripe";
 
+import { Payment, User } from '../models.js';
+
 const stripe = stripeLib(process.env.STRIPE_SECRET_KEY);
 
 export async function createPaymentIntent(req, res) {
   const amount = req.body.amount;
   const paymentMethodId = req.body.paymentMethodId;
-  const customerId = req.body.customerId;
+  // const customerId = req.params.customerId;
+  const customerId = await getCurrentUser(req);
 
   if (amount === null) {
     return res.status(400).send({
@@ -31,10 +34,26 @@ export async function createPaymentIntent(req, res) {
       paymentIntent.id,
     );
 
-    // Send publishable key and PaymentIntent details to client
-    res.status(200).send({
-      payment: paymentIntentConfirmed,
-    });
+    if (paymentIntentConfirmed.status === 'succeeded') {
+      const paymentModel = new Payment({
+        amount: amount,
+        paymentIntent: paymentIntent.id,
+        date: Date.now()
+      });
+
+      await paymentModel.save();
+
+      res.status(200).send({
+        payment: paymentIntentConfirmed,
+      });
+    } else {
+      return res.status(500).send({
+        error: {
+          message: 'Ha ocurrido un error durante el pago',
+          payment: paymentIntentConfirmed
+        },
+      });
+    }
 
   } catch (e) {
     return res.status(400).send({
@@ -46,32 +65,24 @@ export async function createPaymentIntent(req, res) {
 }
 
 /**
-* Crea un usuario
+* @param {String} email
+* @param {String} phone
+* @param {String} name
+* @returns {Object} customer
 */
-export async function createCustomer(req, res) {
-  const email = req.body.email;
-  const phone = req.body.phone;
-  const name = req.body.name;
-  const idempotencyKey = req.body.idempotencyKey;
-
+export async function createCustomer(email, phone, name) {
   try {
     const customer = await stripe.customers.create({
       description: name,
       email: email,
       name: name,
       phone: phone
-    }, {
-      idempotencyKey: idempotencyKey,
     });
 
-    res.status(200).send({ status: 'ok', code: 200, data: customer });
+    return customer;
 
   } catch (error) {
-    return res.status(400).send({
-      error: {
-        message: error,
-      },
-    });
+    throw error;
   }
 };
 
@@ -84,7 +95,8 @@ export async function createCustomer(req, res) {
 */
 export async function getCustomerPaymentMethods(req, res) {
 
-  const customerId = req.params.customerId;
+  // const customerId = req.params.customerId;
+  const customerId = await getCurrentUser(req);
 
   try {
     const paymentMethods = await stripe.paymentMethods.list({
@@ -114,7 +126,8 @@ export async function getCustomerPaymentMethods(req, res) {
 };
 
 export async function createPaymentMethod(req, res) {
-  const customerId = req.body.customerId;
+  // const customerId = req.params.customerId;
+  const customerId = await getCurrentUser(req);
   const cardNumber = req.body.cardNumber;
   const expMonth = req.body.expMonth;
   const expYear = req.body.expYear;
@@ -147,3 +160,9 @@ export async function createPaymentMethod(req, res) {
     });
   }
 };
+
+async function getCurrentUser(req) {
+  const existingUser = req.app.locals.user;
+  const user = await User.findById(existingUser._id);
+  return user.stripeAccount;
+}

@@ -1,5 +1,3 @@
-import { Payment } from './models.js';
-import { StatusCodes } from 'http-status-codes';
 import {
   createPaymentIntent,
   createCustomer,
@@ -12,6 +10,7 @@ export default [{
   access: 'public',
   methods: {
     get:
+    // TODO
       async (req, res) => {
         res.json({cosa:1});
       },
@@ -23,6 +22,7 @@ export default [{
       url: '/:paymentId',
       access: 'public',
       methods: {
+        // TODO
         get: (req, res, next) => {
           res.json({
             test: 'mychild'
@@ -34,13 +34,6 @@ export default [{
       url: '/customer',
       access: 'public',
       children: {
-        item: {
-          url: '/',
-          access: 'public',
-          methods: {
-            post: createCustomer
-          }
-        },
         paymentMethod: {
           url: '/payment_methods',
           access: 'public',
