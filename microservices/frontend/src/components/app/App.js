@@ -4,7 +4,7 @@ import api from '../../api';
 import { useStoreWithInitializer } from '../../state/storeHooks';
 import { Footer } from '../Footer/Footer';
 import { Header } from '../Header/Header';
-import { endLoad, loadUser, logoutUser } from './App.slice';
+import { endLoad, loadUser, logoutUser, showModal, toggleModal } from './App.slice';
 import { HomePage } from '../../modules/home/HomePage';
 import { LoginPage } from '../../modules/login/LoginPage';
 import { RegisterPage } from '../../modules/login/RegisterPage';
@@ -12,17 +12,10 @@ import { ConfirmationPage } from '../../modules/login/ConfirmationPage';
 import { AdminPage } from '../../modules/admin/AdminPage';
 import { RestorePage } from '../../modules/login/RestorePage';
 import { ToastContainer } from 'react-toastify';
-import { useState } from 'react';
 import React from 'react';
 
 export function App () {
-  const { loading, user } = useStoreWithInitializer(({ app }) => app, load);
-  const [parentCallBack, setParentCallBack] = useState(false)
-
-  const onTrigger = (event) => {
-    event.preventDefault()
-    setParentCallBack(!parentCallBack)
-  }
+  const { loading, user, showModal  } = useStoreWithInitializer(({ app }) => app, load);
 
   const userIsLogged = user != null;
 
@@ -31,7 +24,7 @@ export function App () {
       {!loading && (
         <>
           <ToastContainer />
-          <Header user={user} logout={logout} onTrigger={onTrigger} parentCallBack={parentCallBack} setParentCallBack={setParentCallBack}/>
+          <Header user={user} logout={logout} showModal={showModal} handleOpen={handleOpen} handleClose={handleClose}/>
           <Routes>
             <Route
               exact path='/login' element={
@@ -90,6 +83,14 @@ async function load () {
   } catch {
     store.dispatch(endLoad());
   }
+}
+
+const handleClose = () => {
+  store.dispatch(toggleModal());
+}
+
+const handleOpen = () => {
+  store.dispatch(showModal());
 }
 
 async function logout () {

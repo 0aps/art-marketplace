@@ -1,9 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled from 'styled-components'
-import api from "../../api";
-import { toast } from "react-toastify";
 
-export function ProfileModal ({user, parentCallBack, setParentCallBack}) {
+export function ProfileModal ({ user, showModal, handleClose }) {
   const [data, setData] = useState({
       ...user
   })
@@ -15,76 +13,83 @@ export function ProfileModal ({user, parentCallBack, setParentCallBack}) {
       })
   }
 
-  const [isEditButtonClicked, setEditButton] = useState(true)
-
+  const [isEditButtonClicked, setEditButton] = useState(true);
 
   const sendData = (event) => {
       event.preventDefault()
-      console.log('enviando datos...' + data.username + ' ' + data.email)
+      console.log('enviando datos...' + user.username + ' ' + user.email)
+  }
+
+  function toggleFormElements(bDisabled) { 
+    var inputs = document.getElementsByTagName("input"); 
+    for (var i = 0; i < inputs.length; i++) {
+        inputs[i].disabled = !bDisabled;
+    }
   }
 
   return(
     <>
       {
-        parentCallBack &&
+        showModal &&
           <Overlay>
             <ModalContainer>
               <ModalHeader>
                   <h3>Perfil</h3>
               </ModalHeader>
-              <CloseModal onClick={() => setParentCallBack(!parentCallBack)}>
+              <CloseModal onClick={handleClose}>
                 X
               </CloseModal>
-              <Contenido>
+              <InfoContainer>
                 <form className='form' onSubmit={sendData}>
-                  <div class="row">
+                  <div className="row">
                     <label>
                       Nombre de usuario:  
                     </label>
                     <input disabled={isEditButtonClicked} type='text' defaultValue={data.username} onChange={handleInputChange} name='username'/>
                   </div>
-                  <div class="row">
+                  <div className="row">
                     <label>
                       Nombre:  
                     </label>
                     <input disabled={isEditButtonClicked} type='text' defaultValue={data.firstname} onChange={handleInputChange} name='firstname'/>
                   </div>
-                  <div class="row">
+                  <div className="row">
                     <label>
                       Apellido:  
                     </label>
                     <input disabled={isEditButtonClicked} type='text' defaultValue={data.lastname} onChange={handleInputChange} name='lastname'/>
                   </div>
-                  <div class="row">
+                  <div className="row">
                     <label>
                       Telefono:  
                     </label>
                     <input disabled={isEditButtonClicked} type='tel' defaultValue={data.info.phone} onChange={handleInputChange} name='phone'/>
                   </div>
-                  <div class="row">
+                  <div className="row">
                     <label>
                       Correo Electronico:  
                     </label>
                     <input disabled={isEditButtonClicked} type='email' defaultValue={data.email} onChange={handleInputChange} name='address'/>
                   </div>
-                  <div class="row">
+                  <div className="row">
                     <label>
                       Contraseña:  
                     </label>
                     <input disabled={isEditButtonClicked} type='password' defaultValue={data.password} onChange={handleInputChange} name='password'/>
                   </div>
-                  <div class="row">
+                  <div className="row">
                     <label>
                       Confirmar Contraseña:  
                     </label>
                     <input disabled={isEditButtonClicked} type='password' defaultValue={data.password_confirm} onChange={handleInputChange} name='password_confirm'/>
                   </div>
                   <ButtonsContainer>
-                    <button  type='submit' onClick={sendData}>Aceptar</button>
-                    <button onClick={toggleFormElements}>Editar</button>
+                    <button>Aceptar</button>
                   </ButtonsContainer>
               </form>
-            </Contenido>
+              <button className="editButton" onClick={toggleFormElements}>Editar</button>
+              <button className="cancelEditButton" onClick={setEditButton}>Cancelar</button>
+            </InfoContainer>
           </ModalContainer>
         </Overlay>
       }
@@ -92,12 +97,7 @@ export function ProfileModal ({user, parentCallBack, setParentCallBack}) {
   );
 }
 
-function toggleFormElements(bDisabled) { 
-  var inputs = document.getElementsByTagName("input"); 
-  for (var i = 0; i < inputs.length; i++) { 
-      inputs[i].disabled = !bDisabled;
-  }
-}
+
 
 const Overlay = styled.div`
 width: 100vw;
@@ -155,7 +155,7 @@ const ButtonsContainer = styled.div`
   margin-top: 15px;  
 `;
 
-const Contenido = styled.div`
+const InfoContainer = styled.div`
 	display: flex;
 	flex-direction: column;
 	align-items: center;
