@@ -7,6 +7,9 @@ import fs from 'fs';
 
 export default [{
   url: '/certificates',
+  access: {
+    get: 'public'
+  },
   roles: {
     post: ['admin', 'artist']
   },
