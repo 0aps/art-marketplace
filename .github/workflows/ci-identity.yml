@@ -6,7 +6,7 @@ on:
       - 'microservices/identity/**'
     branches:
       - main
-  pull_request:
+  pull_request_target:
     paths:
       - 'microservices/identity/**'
     branches:
