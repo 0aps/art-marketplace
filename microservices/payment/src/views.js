@@ -1,30 +1,59 @@
-import { Payment } from './models.js';
-import { StatusCodes } from 'http-status-codes';
+import {
+  createPaymentIntent,
+  createCustomer,
+  getCustomerPaymentMethods,
+  createPaymentMethod
+} from './controller/payment_controller.js';
 
 export default [{
   url: '/payments',
   methods: {
-    get: async (req, res) => {
-      const records = await Payment.find({});
-      res.json(records);
-    },
-    post: async (req, res) => {
-      const artwork = new Payment({
-        name: req.body.name
-      });
-
-      await artwork.save();
-      res.sendStatus(StatusCodes.OK);
-    }
+    get:
+    // TODO
+      async (req, res) => {
+        res.json({ cosa: 1 });
+      },
+    post: createCustomer
   },
   children: {
     item: {
       url: '/:paymentId',
       methods: {
+        // TODO
         get: (req, res, next) => {
           res.json({
             test: 'mychild'
           });
+        }
+      }
+    },
+    customer: {
+      url: '/customer',
+      children: {
+        paymentMethod: {
+          url: '/payment_methods',
+          methods: {
+            post: createPaymentMethod
+          },
+          children: {
+            item: {
+              url: '/:customerId',
+              methods: {
+                get: getCustomerPaymentMethods
+              }
+            }
+          }
+        }
+      }
+    },
+    paymentIntent: {
+      url: '/payment_intent',
+      children: {
+        item: {
+          url: '/',
+          methods: {
+            post: createPaymentIntent
+          }
         }
       }
     }
