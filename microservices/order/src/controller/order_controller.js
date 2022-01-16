@@ -17,14 +17,8 @@ export async function listAllOrder (req, res) {
  */
 export async function createAnOrder (payment) {
   const newOrder = new Order({
-    id_user: '1234578',
-    items: [
-      {
-        id_artwork: 5341,
-        name: 'Mona lisa',
-        precio: 455.54
-      }
-    ]
+    id_user: payment.user_id,
+    items: payment.items
   });
 
   const order = await newOrder.save();

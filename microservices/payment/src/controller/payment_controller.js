@@ -10,8 +10,10 @@ const stripe = stripeLib(process.env.STRIPE_SECRET_KEY);
 export async function createPaymentIntent(req, res) {
   const amount = req.body.amount;
   const paymentMethodId = req.body.paymentMethodId;
-  // const customerId = req.params.customerId;
-  const customerId = await getCurrentUser(req);
+  const cart = req.body.cart;
+
+  const user = await getCurrentUser(req);
+  const customerStripeId= user.stripeAccount;
 
   if (amount === null) {
     return res.status(400).send({
@@ -26,8 +28,7 @@ export async function createPaymentIntent(req, res) {
       currency: "EUR",
       amount: amount,
       payment_method: paymentMethodId,
-      customer: customerId
-      // automatic_payment_methods: { enabled: true },
+      customer: customerStripeId
     });
 
     const paymentIntentConfirmed = await stripe.paymentIntents.confirm(
@@ -37,11 +38,15 @@ export async function createPaymentIntent(req, res) {
     if (paymentIntentConfirmed.status === 'succeeded') {
       const paymentModel = new Payment({
         amount: amount,
-        paymentIntent: paymentIntent.id,
-        date: Date.now()
+        id_pago_stripe: paymentIntent.id,
+        date: Date.now(),
+        items: cart.items,
+        cart_id: cart.id,
+        user_id: user.id
       });
 
       await paymentModel.save();
+      await res.publish('payment-success', paymentModel);
 
       res.status(200).send({
         payment: paymentIntentConfirmed,
@@ -96,7 +101,7 @@ export async function createCustomer(email, phone, name) {
 export async function getCustomerPaymentMethods(req, res) {
 
   // const customerId = req.params.customerId;
-  const customerId = await getCurrentUser(req);
+  const customerId = (await getCurrentUser(req)).stripeAccount;
 
   try {
     const paymentMethods = await stripe.paymentMethods.list({
@@ -127,7 +132,7 @@ export async function getCustomerPaymentMethods(req, res) {
 
 export async function createPaymentMethod(req, res) {
   // const customerId = req.params.customerId;
-  const customerId = await getCurrentUser(req);
+  const customerId = (await getCurrentUser(req)).stripeAccount;
   const cardNumber = req.body.cardNumber;
   const expMonth = req.body.expMonth;
   const expYear = req.body.expYear;
@@ -163,6 +168,5 @@ export async function createPaymentMethod(req, res) {
 
 async function getCurrentUser(req) {
   const existingUser = req.app.locals.user;
-  const user = await User.findById(existingUser._id);
-  return user.stripeAccount;
+  return await User.findById(existingUser._id);
 }
