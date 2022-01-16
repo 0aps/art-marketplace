@@ -1,38 +1,38 @@
-import dotenv from "dotenv";
-dotenv.config();
+import dotenv from 'dotenv';
 
-import stripeLib from "stripe";
+import stripeLib from 'stripe';
 
 import { Payment, User } from '../models.js';
+dotenv.config();
 
 const stripe = stripeLib(process.env.STRIPE_SECRET_KEY);
 
-export async function createPaymentIntent(req, res) {
+export async function createPaymentIntent (req, res) {
   const amount = req.body.amount;
   const paymentMethodId = req.body.paymentMethodId;
   const cart = req.body.cart;
 
   const user = await getCurrentUser(req);
-  const customerStripeId= user.stripeAccount;
+  const customerStripeId = user.stripeAccount;
 
   if (amount === null) {
     return res.status(400).send({
       error: {
-        message: 'La variable ammount debe contener datos',
-      },
+        message: 'La variable ammount debe contener datos'
+      }
     });
   }
 
   try {
     const paymentIntent = await stripe.paymentIntents.create({
-      currency: "EUR",
+      currency: 'EUR',
       amount: amount,
       payment_method: paymentMethodId,
       customer: customerStripeId
     });
 
     const paymentIntentConfirmed = await stripe.paymentIntents.confirm(
-      paymentIntent.id,
+      paymentIntent.id
     );
 
     if (paymentIntentConfirmed.status === 'succeeded') {
@@ -49,22 +49,21 @@ export async function createPaymentIntent(req, res) {
       await res.publish('payment-success', paymentModel);
 
       res.status(200).send({
-        payment: paymentIntentConfirmed,
+        payment: paymentIntentConfirmed
       });
     } else {
       return res.status(500).send({
         error: {
           message: 'Ha ocurrido un error durante el pago',
           payment: paymentIntentConfirmed
-        },
+        }
       });
     }
-
   } catch (e) {
     return res.status(400).send({
       error: {
-        message: e.message,
-      },
+        message: e.message
+      }
     });
   }
 }
@@ -75,21 +74,16 @@ export async function createPaymentIntent(req, res) {
 * @param {String} name
 * @returns {Object} customer
 */
-export async function createCustomer(email, phone, name) {
-  try {
-    const customer = await stripe.customers.create({
-      description: name,
-      email: email,
-      name: name,
-      phone: phone
-    });
+export async function createCustomer (email, phone, name) {
+  const customer = await stripe.customers.create({
+    description: name,
+    email: email,
+    name: name,
+    phone: phone
+  });
 
-    return customer;
-
-  } catch (error) {
-    throw error;
-  }
-};
+  return customer;
+}
 
 /**
 * Retorna los métodos de pago del usuario
@@ -98,8 +92,7 @@ export async function createCustomer(email, phone, name) {
 * @param {functions.EventContext} context EventContext
 * @returns {Object} metodos de pago y método de pago principal
 */
-export async function getCustomerPaymentMethods(req, res) {
-
+export async function getCustomerPaymentMethods (req, res) {
   // const customerId = req.params.customerId;
   const customerId = (await getCurrentUser(req)).stripeAccount;
 
@@ -116,21 +109,19 @@ export async function getCustomerPaymentMethods(req, res) {
       code: 200,
       data: {
         paymentMethods: paymentMethods,
-        defaultPaymentMethod: customer.invoice_settings.default_payment_method,
+        defaultPaymentMethod: customer.invoice_settings.default_payment_method
       }
     });
-
   } catch (error) {
     return res.status(400).send({
       error: {
-        message: error,
-      },
+        message: error
+      }
     });
   }
+}
 
-};
-
-export async function createPaymentMethod(req, res) {
+export async function createPaymentMethod (req, res) {
   // const customerId = req.params.customerId;
   const customerId = (await getCurrentUser(req)).stripeAccount;
   const cardNumber = req.body.cardNumber;
@@ -145,8 +136,8 @@ export async function createPaymentMethod(req, res) {
         number: cardNumber,
         exp_month: expMonth,
         exp_year: expYear,
-        cvc: cvc,
-      },
+        cvc: cvc
+      }
     });
 
     const paymentMethodResult = await stripe.paymentMethods.attach(
@@ -155,18 +146,17 @@ export async function createPaymentMethod(req, res) {
     );
 
     res.status(200).send({ status: 'ok', code: 200, data: paymentMethodResult });
-
   } catch (error) {
     return res.status(400).send({
-      section: "Attaching card",
+      section: 'Attaching card',
       error: {
-        message: error,
-      },
+        message: error
+      }
     });
   }
-};
+}
 
-async function getCurrentUser(req) {
+async function getCurrentUser (req) {
   const existingUser = req.app.locals.user;
   return await User.findById(existingUser._id);
 }

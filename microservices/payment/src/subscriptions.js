@@ -8,8 +8,7 @@ export default [
       {
         name: 'user-create',
         on: async (user) => {
-
-          const customer = await createCustomer(user.login.email,'',user.username);
+          const customer = await createCustomer(user.login.email, '', user.username);
 
           const userModel = new User({
             _id: user._id,
@@ -17,7 +16,7 @@ export default [
             username: user.username,
             stripeAccount: customer.id
           });
-          
+
           await userModel.save();
         }
       }

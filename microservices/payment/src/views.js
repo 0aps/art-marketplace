@@ -12,11 +12,10 @@ export default [{
     get:
     // TODO
       async (req, res) => {
-        res.json({cosa:1});
+        res.json({ cosa: 1 });
       },
     post: createCustomer
-  }
-  ,
+  },
   children: {
     item: {
       url: '/:paymentId',
@@ -45,11 +44,11 @@ export default [{
               url: '/:customerId',
               access: 'public',
               methods: {
-                get: getCustomerPaymentMethods,
+                get: getCustomerPaymentMethods
               }
             }
           }
-        },
+        }
       }
     },
     paymentIntent: {
