@@ -39,9 +39,7 @@ export default [{
     },
     get: async (req, res) => {
       const records = await Certificate.find({});
-      if (!records) {
-        return next(new RecordNotFound());
-      }
+      res.sendStatus(StatusCodes.OK);
       res.json(records.map(record => record.toClient()));
     }
   },
