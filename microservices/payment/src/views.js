@@ -7,7 +7,6 @@ import {
 
 export default [{
   url: '/payments',
-  access: 'public',
   methods: {
     get:
     // TODO
@@ -19,7 +18,6 @@ export default [{
   children: {
     item: {
       url: '/:paymentId',
-      access: 'public',
       methods: {
         // TODO
         get: (req, res, next) => {
@@ -31,18 +29,15 @@ export default [{
     },
     customer: {
       url: '/customer',
-      access: 'public',
       children: {
         paymentMethod: {
           url: '/payment_methods',
-          access: 'public',
           methods: {
             post: createPaymentMethod
           },
           children: {
             item: {
               url: '/:customerId',
-              access: 'public',
               methods: {
                 get: getCustomerPaymentMethods
               }
@@ -53,11 +48,9 @@ export default [{
     },
     paymentIntent: {
       url: '/payment_intent',
-      access: 'public',
       children: {
         item: {
           url: '/',
-          access: 'public',
           methods: {
             post: createPaymentIntent
           }
