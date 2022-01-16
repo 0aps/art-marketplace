@@ -50,7 +50,7 @@
                 Certificado de Autenticidad
             </div>
             <div>
-                <img class="artwork" src="{{pictures}}"  alt="Imagen de la Obra">
+                <img class="artwork" src="" alt="Imagen de la Obra">
             </div>
             <div>
                 <table class="desc">
@@ -61,27 +61,24 @@
                     </tr>
                     <tr>
                         <td>
-                            <b>Titulo:</b><br>
-                            {{name}} <br>
+                            <b>Título de la obra : </b><br>
+                            {{artName}} <br>
                             <br>
-                            <b>Descripcion:</b><br>
-                            {{description}} <br>
+                            <b>Descripción de la obra : </b><br>
+                            {{artDescription}} <br>
                             <br>
-                            <b>Categoria:</b><br>
-                            {{category.name}}
+                            <b>Categoria de la obra : </b><br>
+                            {{categoryName}}
                         </td>
                         <td>
 
                         </td>
                         <td>
-                            <b>Usuario del Artista:</b><br>
-                            {{user.username}} <br>
+                            <b>Usuario del Artista : </b><br>
+                            {{username}} <br>
                             <br>
-                            <b>Fecha Creacion:</b><br>
-                            {{createdAt}} <br>
-                            <br>
-                            <b>Nº Certificado:</b><br>
-                            {{certificateNumber}}
+                            <b>Fecha de creación de la obra : </b><br>
+                            {{artCreationDate}} <br>
                         </td>
                     </tr>
                 </table>
@@ -92,7 +89,7 @@
                 <tr>
                     <td>
                         <b>Firma del Artista:</b> <br>
-                        {{user.username}} <br>
+                        {{username}} <br>
                     </td>
                 </tr>
             </table>

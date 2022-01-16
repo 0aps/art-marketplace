@@ -3,8 +3,6 @@ import fs from 'fs-extra';
 import hbs from 'handlebars';
 import path from 'path';
 
-let certificateNumber = 1;
-
 const compile = async function (templateName, data) {
   const filePath = path.join(process.cwd(), '/src/templates', `${templateName}.hbs`);
   if (!filePath) {
@@ -15,33 +13,26 @@ const compile = async function (templateName, data) {
 };
 
 class pdfCreation {
-  static async createPDF (artName, data) {
+  static async createPDF (data) {
     const browser = await puppeteer.launch({ headless: true });
     const page = await browser.newPage();
     const options = {
-      path: './src/documents/' + artName + '.pdf',
+      path: './src/documents/' + data.artName + '.pdf',
       format: 'A4',
       printBackground: true
     };
 
-    const newData = data;
-
-    const unixTime = newData.createdAt;
+    const unixTime = data.artCreationDate;
     const date = new Date(unixTime * 1000);
-    console.log(date.toLocaleDateString('en-GB'));
+    data.artCreationDate = date.toLocaleDateString('en-GB');
 
-    newData.createdAt = date.toLocaleDateString('en-GB');
-    newData.certificateNumber = certificateNumber;
-
-    const content = await compile('certificate', newData);
+    const content = await compile('certificate', data);
 
     await page.setContent(content);
     await page.emulateMediaType('screen');
     await page.pdf(options);
 
     await browser.close();
-
-    certificateNumber++;
   }
 }
 

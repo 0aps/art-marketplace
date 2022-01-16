@@ -4,21 +4,12 @@ const { Schema, SchemaTypes } = mongoose;
 
 export default {
   Certificate: new Schema({
-    artName: {
-      type: SchemaTypes.String,
-      required: [true, 'Artwork name required'],
-      unique: true
-    },
-    artID: {
-      type: SchemaTypes.String,
-      required: [true, 'Artwork ID required'],
-      unique: true
-    },
-    certificatePath: {
-      type: SchemaTypes.String,
-      required: [true, 'Certificate path required'],
-      unique: true
-    },
-    creationDate: SchemaTypes.Date
+    artName: { type: SchemaTypes.String, required: true },
+    artDescription: { type: SchemaTypes.String, required: true },
+    artCreationDate: { type: SchemaTypes.Number, required: true },
+    categoryName: { type: SchemaTypes.String, required: true },
+    username: { type: SchemaTypes.String, required: true },
+    certificatePath: SchemaTypes.String,
+    createdAt: SchemaTypes.Date
   })
 };

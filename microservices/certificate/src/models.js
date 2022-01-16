@@ -6,8 +6,10 @@ class CertificateModel {
         return {
             id: this._id,
             artName: this.artName,
-            artID: this.artID,
-            certificatePath: this.certificatePath,
+            artDescription: this.artDescription,
+            artCreationDate: this.artCreationDate,
+            categoryName: this.categoryName,
+            username: this.username,
             createdAt: this.createdAt
       };
     }
