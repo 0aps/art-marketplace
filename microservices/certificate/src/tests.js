@@ -1,7 +1,7 @@
 import request from 'supertest';
 import { StatusCodes } from 'http-status-codes';
 import app from './index.js';
-import {Certificate} from './models.js';
+import { Certificate } from './models.js';
 import seed from './seed.js';
 
 describe('Certificate API endpoints', () => {
@@ -33,7 +33,7 @@ describe('Certificate API endpoints', () => {
     test('Should create a certificate if payload is correct', async () => {
       const response = await agent.post(base).send(certificateInfo);
       expect(response.statusCode).toBe(StatusCodes.CREATED);
-      const certif = await Certificate.findOne({artname: certificateInfo.artName});
+      const certif = await Certificate.findOne({ artname: certificateInfo.artName });
       expect(certif).not.toBeNull();
     });
   });
@@ -51,9 +51,9 @@ describe('Certificate API endpoints', () => {
       const response = await agent.get(`${base}/12`);
       expect(response.statusCode).toBe(StatusCodes.NOT_FOUND);
     });
-    
+
     test('Should return a certificate if certificateID is valid', async () => {
-      const certif = await Certificate.findOne({artname: 'artname'});
+      const certif = await Certificate.findOne({ artname: 'artname' });
       const response = await agent.get(`${base}/${certif.id}`);
       expect(response.statusCode).toBe(StatusCodes.OK);
     });
@@ -66,13 +66,13 @@ describe('Certificate API endpoints', () => {
     });
 
     test('Should return an error if payload is not valid', async () => {
-      const certif = await Certificate.findOne({artname: 'artname'});
+      const certif = await Certificate.findOne({ artname: 'artname' });
       const response = await agent.put(`${base}/${certif.id}`).send({});
       expect(response.statusCode).toBe(StatusCodes.BAD_REQUEST);
     });
 
     test('Should update a certificate if certificateID and payload are valid', async () => {
-      const certif = await Certificate.findOne({artname: 'artname'});
+      const certif = await Certificate.findOne({ artname: 'artname' });
       const response = await agent.put(`${base}/${certif.id}`).send(certificateInfo);
       expect(response.statusCode).toBe(StatusCodes.OK);
     });
@@ -80,12 +80,12 @@ describe('Certificate API endpoints', () => {
 
   describe('DELETE method endpoints', () => {
     test('Should return an error if certificateId is not valid', async () => {
-      const response = await agent.put(`${base}/12`).send(certificateInfo);;
+      const response = await agent.put(`${base}/12`).send(certificateInfo);
       expect(response.statusCode).toBe(StatusCodes.NOT_FOUND);
     });
 
     test('Should delete the certificate if certificateID is valid', async () => {
-      const certif = await Certificate.findOne({artname: 'artname'});
+      const certif = await Certificate.findOne({ artname: 'artname' });
       const response = await agent.delete(`${base}/${certif.id}`);
       expect(response.statusCode).toBe(StatusCodes.NO_CONTENT);
     });
