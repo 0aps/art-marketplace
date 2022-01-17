@@ -7,7 +7,7 @@ class PaymentModel {
       id: this._id,
       amount: this.amount,
       paymentIntent: this.paymentIntent,
-      date: this.date
+      createdAt: this.createdAt
     };
   }
 }

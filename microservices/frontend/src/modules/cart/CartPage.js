@@ -27,8 +27,8 @@ export function CartPage () {
     step: 1
   });
 
-  return (
-    <>
+  return (state.loaded
+    ? <>
       <Container fluid className='py-5'>
         <Row>
           <Col
@@ -54,7 +54,7 @@ export function CartPage () {
                   className='float-end'
                   disabled={items.length === 0 || (state.step === 2 && !selectedPaymentMethod)}
                   onClick={() => state.step === 3
-                    ? completeCheckout({ id, selectedPaymentMethod, items })
+                    ? completeCheckout({ setState, id, selectedPaymentMethod, items })
                     : setState(state => ({
                       ...state,
                       step: state.step + 1
@@ -68,7 +68,8 @@ export function CartPage () {
         </Row>
 
       </Container>
-    </>
+      </>
+    : <div className='loader' />
   );
 }
 
@@ -115,7 +116,7 @@ function ProgressStep ({ step }) {
   );
 }
 
-async function completeCheckout ({ id, selectedPaymentMethod, items }) {
+async function completeCheckout ({ setState, id, selectedPaymentMethod, items }) {
   try {
     const confirm = await swal({
       title: '¿estás seguro de proceder con la compra?',
@@ -123,12 +124,15 @@ async function completeCheckout ({ id, selectedPaymentMethod, items }) {
       buttons: true
     });
     if (confirm) {
+      setState(state => ({ ...state, loaded: false }));
       const order = await api.payment.create({ paymentMethod: selectedPaymentMethod, id, items });
-      const cart = await api.cart.get();
-      store.dispatch(cleanPaymentMethod());
-      store.dispatch(loadCart(cart));
-      toast.success(`La orden ${order.id} ha sido creada exitosamente. El detalle está disponible en la sección de órdenes.`);
-      location.hash = '#/';
+      setTimeout(async () => {
+        const cart = await api.cart.get();
+        store.dispatch(cleanPaymentMethod());
+        store.dispatch(loadCart(cart));
+        toast.success(`La orden ${order.id} ha sido creada exitosamente. El detalle está disponible en la sección de órdenes.`);
+        location.hash = '#/';
+      }, 3000);
     }
   } catch (e) {
     toast.error(`Error al realizar la compra. ${e.message}`);

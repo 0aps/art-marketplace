@@ -19,7 +19,7 @@ export function PaymentDetail () {
         <CardBody>
           {paymentMethods.length === 0 &&
             <h4>No tienes métodos de pago agregados.
-              <Link to='/'><i className='fa fa-plus-circle' /> Añade uno! </Link>
+              <Link to='/profile'><i className='fa fa-plus-circle' /> Añade uno! </Link>
             </h4>}
           {paymentMethods.length > 0 &&
             <FormGroup>
@@ -31,7 +31,7 @@ export function PaymentDetail () {
                 name='paymentMethods'
                 type='select'
                 value={selectedPaymentMethod?.id ?? ''}
-                options={paymentMethods.map(e => ({ text: `Terminada en ${e.last4}`, value: e.id }))}
+                options={paymentMethods.map(e => ({ text: `Terminada en ${e.card.last4}`, value: e.id }))}
                 required
                 onChange={(event) => onPaymentMethodChange({ event, paymentMethods })}
               />

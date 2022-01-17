@@ -13,7 +13,7 @@ describe('Order API endpoints', () => {
   });
 
   test('should return an error if not authenticated', async () => {
-    const response = await agent.get(base + '/cart/orders');
+    const response = await agent.get(base + '/orders');
     expect(response.statusCode).toBe(StatusCodes.UNAUTHORIZED);
     expect(response.body).toHaveProperty('message');
   });
