@@ -25,6 +25,18 @@ spec:
               value: '20000'
             - name: DB_URI
               value: 'mongodb://certificate-db-service:27017/certificate?retryWrites=true&w=majority'
+            - name: REDIS_URI
+              value: 'redis://redis-service:6379'
+            - name: SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: artwork-secret
+                  key: SECRET
+            - name: SENDGRID_API_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: artwork-secret
+                  key: SENDGRID_API_KEY
 ---
 apiVersion: v1
 kind: Service

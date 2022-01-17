@@ -15,10 +15,10 @@ export default function FieldGroup (props) {
     if (customControl) return customControl(props);
     let FinalControl;
     if (props.type === 'select') {
-      const { options, ...formOptions } = rest;
-      if (Array.isArray(options.values) && options.values.length > 0 &&
-                typeof options.values[0] === 'string') {
-        options.values = options.values.map(option => {
+      let { options, ...formOptions } = rest;
+      if (Array.isArray(options) && options.length > 0 &&
+                typeof options[0] === 'string') {
+        options = options.map(option => {
           return { text: option, value: option };
         });
       }
@@ -26,7 +26,7 @@ export default function FieldGroup (props) {
       FinalControl = (
         <Input type='select' {...validProps} {...formOptions}>
           <option value=''>Escoge una ...</option>
-          {options && options.values.map(option => {
+          {options && options.map(option => {
             return (
               <option value={option.value} key={option.value}>
                 {option.text}

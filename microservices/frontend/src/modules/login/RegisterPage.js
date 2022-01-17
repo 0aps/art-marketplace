@@ -21,7 +21,8 @@ export function RegisterPage () {
         password: '',
         password_confirm: '',
         phone: '',
-        address: ''
+        address: '',
+        role: 'artist'
       },
       error: {}
     }

@@ -15,13 +15,13 @@ export default [{
   },
   methods: {
     get: async (req, res) => {
-      const query = req.query;
-      const perPage = query.perPage ?? Constants.defaultPerPage;
-      const page = Math.max(0, query.page ?? 0);
-      const [field, sort] = query.sort ? query.sort.split(',') : Constants.defaultSort;
+      let { perPage, page, sort, ...query } = req.query;
+      const [field, sortType] = sort ? sort.split(',') : Constants.defaultSort;
+      perPage = perPage ? parseInt(perPage) : Constants.defaultPerPage;
+      page = Math.max(0, page ?? 0);
 
       try {
-        const records = await Artwork.find().populate('user category').skip(perPage * page).limit(perPage).sort({ [field]: sort }).exec();
+        const records = await Artwork.find(query).populate('user category').skip(perPage * page).limit(perPage).sort({ [field]: sortType }).exec();
         const count = await Artwork.countDocuments();
         res.json({
           records: records.map(record => record.toClient()),
