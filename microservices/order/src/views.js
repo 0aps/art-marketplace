@@ -1,6 +1,10 @@
+import {
+  listAllOrder,
+  readAnOrder
+} from './controller/order_controller.js';
 import { InvalidRequest, RecordNotFound } from 'art-marketplace-common';
 import { StatusCodes } from 'http-status-codes';
-import { Cart, Order } from './models.js';
+import { Cart } from './models/models.js';
 
 export default [
   {
@@ -39,7 +43,11 @@ export default [
                 return next(new RecordNotFound());
               }
               if (!item) {
-                return next(new InvalidRequest('Debes espeficiar una obra para agregar al carrito.'));
+                return next(
+                  new InvalidRequest(
+                    'Debes espeficiar una obra para agregar al carrito.'
+                  )
+                );
               }
 
               cart.items.push(item);
@@ -66,10 +74,14 @@ export default [
 
                 const hasItem = await Cart.hasItem(artworkId);
                 if (!hasItem) {
-                  return next(new InvalidRequest('La obra no está en el carrito.'));
+                  return next(
+                    new InvalidRequest('La obra no está en el carrito.')
+                  );
                 }
 
-                cart.items = cart.items.filter($item => $item.id !== artworkId);
+                cart.items = cart.items.filter(
+                  ($item) => $item.id !== artworkId
+                );
                 await cart.save();
 
                 res.sendStatus(StatusCodes.NO_CONTENT);
@@ -77,35 +89,21 @@ export default [
             }
           }
         }
-      }
-    }
-  },
-  {
-    url: '/orders',
-    methods: {
-      get: async (req, res) => {
-        const records = await Order.find({});
-        res.json(records);
       },
-      post: async (req, res) => {
-        const artwork = new Order({
-          name: req.body.name
-        });
-
-        await artwork.save();
-        res.sendStatus(StatusCodes.OK);
-      }
-    },
-    children: {
-      item: {
-        url: '/:orderId',
+      orders: {
+        url: '/orders',
         methods: {
-          get: (req, res, next) => {
-            res.json({
-              test: 'mychild'
-            });
+          get: listAllOrder
+        },
+        children: {
+          item: {
+            url: '/:orderId',
+            methods: {
+              get: readAnOrder
+            }
           }
         }
       }
     }
-  }];
+  }
+];

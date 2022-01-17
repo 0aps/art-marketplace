@@ -19,6 +19,11 @@ export default class Base {
     return this.apiClient.patch(url, record);
   }
 
+  put (id, record) {
+    const url = [this.base, '/', id].join('');
+    return this.apiClient.put(url, record);
+  }
+
   delete (id) {
     const url = [this.base, '/', id].join('');
     return this.apiClient.delete(url);
