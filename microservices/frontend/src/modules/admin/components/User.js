@@ -1,18 +1,29 @@
-
 export function User ({ user, onEdit, onDelete }) {
-    return (
-        <tr>
-            <th>{user.username}</th>
-            <td>{user.firstname}</td>
-            <td>{user.lastname}</td>
-            <td>{user.role}</td>
-            <td>{user.email}</td>
-            <td>{user.info.phone}</td>
-            <td>{user.info.address}</td> 
-            <td>
-                <button className="btn btn-primary" onClick={() => onEdit(user)}>Editar</button>
-                <button className="btn btn-primary" onClick={() => onDelete(user)}>Borrar</button>
-            </td>
-        </tr>
-    )
+  return (
+    <tr>
+      <td>
+        <h4>
+          <a
+            className='pointer mx-3'
+            onClick={() => onEdit(user)}
+          >
+            <span><i className='fa fa-edit' /></span>
+          </a>
+          <a
+            className='pointer'
+            onClick={() => onDelete(user)}
+          >
+            <span><i className='fa fa-trash' /></span>
+          </a>
+        </h4>
+      </td>
+      <th>{user.username}</th>
+      <td>{user.firstname}</td>
+      <td>{user.lastname}</td>
+      <td>{user.role}</td>
+      <td>{user.email}</td>
+      <td>{user.info.phone}</td>
+      <td>{user.info.address}</td>
+    </tr>
+  );
 }

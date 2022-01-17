@@ -351,6 +351,7 @@ export default [{
       url: '/:userId',
       roles: {
         get: ['admin'],
+        put: ['artist', 'collector', 'admin'],
         delete: ['admin']
       },
       methods: {
@@ -359,6 +360,11 @@ export default [{
          * /users/{userId}:
          *   get:
          *     description: Get a particular user information
+         *     parameters:
+         *       - name: userId
+         *         type: string
+         *         in: path
+         *         required: true
          *     responses:
          *       200:
          *         description: User information
@@ -385,6 +391,17 @@ export default [{
          * /users/{userId}:
          *   put:
          *     description: Update a particular user information
+         *     parameters:
+         *       - name: userId
+         *         type: string
+         *         in: path
+         *         required: true
+         *     requestBody:
+         *       required: true
+         *       content:
+         *         application/json:
+         *           schema:
+         *             $ref: '#/components/schemas/UserPayload'
          *     responses:
          *       200:
          *         description: User information
@@ -395,7 +412,7 @@ export default [{
          */
         put: async (req, res, next) => {
           try {
-            const { user } = req.locals;
+            const { user } = req.app.locals;
             const userId = req.params.userId;
             const payload = req.body;
             if (userId !== user.id && !(user.role === 'admin')) {
@@ -435,7 +452,7 @@ export default [{
 
             res.json(record.toClient());
           } catch (e) {
-            res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(e);
+            res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(e.message);
           }
         },
         /**
@@ -443,6 +460,11 @@ export default [{
          * /users/{userId}:
          *   delete:
          *     description: Delete a particular user information
+         *     parameters:
+         *       - name: userId
+         *         type: string
+         *         in: path
+         *         required: true
          *     responses:
          *       204:
          *         description: User was deleted successfully

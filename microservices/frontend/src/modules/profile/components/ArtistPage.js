@@ -64,9 +64,7 @@ export function ArtistPage ({ user }) {
         </Row>
       </Container>
     </>
-    : <div className='loader' />
-  )
-  ;
+    : <div className='loader' />);
 }
 
 function ArtworkList ({ artworks, onEditItem, onRemoveItem }) {
