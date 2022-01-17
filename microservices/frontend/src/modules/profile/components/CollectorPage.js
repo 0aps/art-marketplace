@@ -3,7 +3,8 @@ import api from '../../../api';
 import { toast } from 'react-toastify';
 import { Card, Col, Container, Nav, NavItem, NavLink, Row, TabContent, Table, TabPane } from 'reactstrap';
 import classNames from 'classnames';
-import { Link } from 'react-router-dom';
+import { OrderList } from './OrdersList';
+import { PaymentMethodList } from './PaymentMethodList';
 
 export function CollectorPage ({ user }) {
   const [state, setState] = useState({
@@ -58,7 +59,9 @@ export function CollectorPage ({ user }) {
                 <TabPane tabId={2}>
                   <Row>
                     <Col md={12}>
-                      <PaymentMethodList paymentMethods={state.paymentMethods} />
+                      <PaymentMethodList
+                        paymentMethods={state.paymentMethods}
+                      />
                     </Col>
                   </Row>
                 </TabPane>
@@ -67,108 +70,8 @@ export function CollectorPage ({ user }) {
           </Col>
         </Row>
       </Container>
-    </>
+      </>
     : <div className='loader' />);
-}
-
-function OrderList ({ orders, onViewItem }) {
-  return (
-    <>
-      {orders.length === 0 &&
-        <h4>No tienes compras. <Link to='/'><i className='fa fa-plus-circle' /> Haz una compra! </Link></h4>}
-      {orders.length > 0 &&
-        <Table striped>
-          <thead>
-            <tr>
-              <th />
-              <th>
-                Orden #
-              </th>
-              <th>
-                Fecha
-              </th>
-              <th>
-                Total
-              </th>
-              <th>
-                Estado
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {orders.map(order =>
-              <tr key={order.id}>
-                <th scope='row'>
-                  <a
-                    className='pointer'
-                    onClick={() => onViewItem(order)}
-                  >
-                    <span><i className='fa fa-eye' /></span>
-                  </a>
-                </th>
-                <td>
-                  {order.id}
-                </td>
-                <td>
-                  {(new Date(order.createdAt * 1000).toLocaleString())}
-                </td>
-                <td>
-                  ${order.total.toFixed(2)}
-                </td>
-                <td>
-                  Completada
-                </td>
-              </tr>)}
-          </tbody>
-        </Table>}
-    </>
-  );
-}
-
-function PaymentMethodList ({ paymentMethods, onRemoveItem }) {
-  return (
-    <>
-      {paymentMethods.length === 0 &&
-        <h4>No tienes métodos de pagos. <Link to='/'><i className='fa fa-plus-circle' /> Agrega uno! </Link></h4>}
-      {paymentMethods.length > 0 &&
-        <Table striped>
-          <thead>
-            <tr>
-              <th />
-              <th>
-                Últimos 4 dígitos
-              </th>
-              <th>
-                Dirección
-              </th>
-              <th>
-                Fecha
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {paymentMethods.map(paymentMethod =>
-              <tr key={paymentMethod.id}>
-                <th scope='row'>
-                  <a
-                    className='pointer'
-                    onClick={() => onRemoveItem(paymentMethod)}
-                  >
-                    <span><i className='fa fa-trash' /></span>
-                  </a>
-                </th>
-                <td>
-                  {paymentMethod.last4}
-                </td>
-                <td />
-                <td>
-                  {(new Date(paymentMethod.createdAt * 1000).toLocaleString())}
-                </td>
-              </tr>)}
-          </tbody>
-        </Table>}
-    </>
-  );
 }
 
 async function load ({ user, setState }) {

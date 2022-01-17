@@ -7,15 +7,7 @@ class OrderAPI extends Base {
   }
 
   list (query) {
-    // return this.apiClient.get(this.base, {}, query);
-    return [{
-      id: 'idorder',
-      createdAt: 1640819792,
-      cart: {
-        items: []
-      },
-      total: 1040.23
-    }];
+    return this.apiClient.get(this.base, {}, query);
   }
 }
 

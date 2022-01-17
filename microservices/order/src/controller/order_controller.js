@@ -1,4 +1,5 @@
-import { Order } from '../models/models.js';
+import moment from 'moment';
+import { Cart, Order } from '../models.js';
 import { StatusCodes } from 'http-status-codes';
 
 /**
@@ -8,20 +9,24 @@ import { StatusCodes } from 'http-status-codes';
 export async function listAllOrder (req, res) {
   const user = req.app.locals.user;
 
-  const records = await Order.find({ id_user: user.id });
-  res.json(records);
+  const records = await Order.find({ user: user.id }).populate('user cart');
+  res.json(records.map(record => record.toClient()));
 }
 
 /**
  * Crear la orden
  */
 export async function createAnOrder (payment) {
-  const newOrder = new Order({
-    id_user: payment.user_id,
-    items: payment.items
+  const order = new Order({
+    user: payment.userId,
+    cart: payment.cartId,
+    total: payment.amount,
+    createdAt: moment().unix()
   });
 
-  const order = await newOrder.save();
+  await order.save();
+  await Cart.findByIdAndUpdate(payment.cartId, { state: 'inactive' });
+
   return order;
 }
 

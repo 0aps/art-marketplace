@@ -17,6 +17,8 @@
     "lint"
   ],
   "dependencies": {
+    "@stripe/react-stripe-js": "^1.7.0",
+    "@stripe/stripe-js": "^1.22.0",
     "art-marketplace-common": "^1.0.1",
     "axios": "^0.24.0",
     "bootstrap": "^5.1.3",

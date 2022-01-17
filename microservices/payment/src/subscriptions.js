@@ -8,7 +8,7 @@ export default [
       {
         name: 'user-create',
         on: async (user) => {
-          const customer = await createCustomer(user.login.email, '', user.username);
+          const customer = await createCustomer(user);
 
           const userModel = new User({
             _id: user._id,

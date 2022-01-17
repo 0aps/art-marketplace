@@ -1,4 +1,4 @@
-import { User } from './models/models.js';
+import { User } from './models.js';
 import { createAnOrder } from './controller/order_controller.js';
 
 export default [

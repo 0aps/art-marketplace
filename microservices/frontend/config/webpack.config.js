@@ -1,3 +1,4 @@
+const webpack = require('webpack');
 const path = require('path');
 const isProduction = process.env.NODE_ENV === 'production';
 const stylesHandler = 'style-loader';
@@ -13,6 +14,9 @@ const config = {
     host: 'localhost'
   },
   plugins: [
+      new webpack.EnvironmentPlugin({
+        STRIPE_KEY: 'pk_test_51KIE9yCDrs0vmEnNrXN5gP9Rxpamzic2GK7o6corKvBQQsoqpHteSsDW6UuK4Mrf9LSfEbO0FUBaua2WmTF2SD2p00AtOBaviO',
+      })
   ],
   module: {
     rules: [
