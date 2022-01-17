@@ -9,6 +9,12 @@ class OrderAPI extends Base {
   list (query) {
     return this.apiClient.get(this.base, {}, query);
   }
+
+  get (id) {
+    const url = [this.base, '/', id].join('');
+    return this.apiClient.get(url);
+  }
+
 }
 
 export default OrderAPI;
