@@ -9,9 +9,19 @@ export default class Base {
     return this.apiClient.post(this.base, payload);
   }
 
-  update (id, user) {
+  get (id) {
     const url = [this.base, '/', id].join('');
-    return this.apiClient.patch(url, user);
+    return this.apiClient.get(url);
+  }
+
+  update (id, record) {
+    const url = [this.base, '/', id].join('');
+    return this.apiClient.patch(url, record);
+  }
+
+  put (id, record) {
+    const url = [this.base, '/', id].join('');
+    return this.apiClient.put(url, record);
   }
 
   delete (id) {
@@ -19,7 +29,7 @@ export default class Base {
     return this.apiClient.delete(url);
   }
 
-  list () {
-    return this.apiClient.get(this.base);
+  list (query) {
+    return this.apiClient.get(this.base, {}, query);
   }
 }

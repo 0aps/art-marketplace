@@ -4,9 +4,11 @@ import {
   UncontrolledDropdown, DropdownItem, DropdownMenu,
   DropdownToggle, NavbarToggler, Collapse,
 } from 'reactstrap';
-import React from 'react';
+import { useStore } from '../../state/storeHooks';
 
 export function NavBar ({ user, logout, handleOpen }) {
+  const { items } = useStore(({ cart }) => cart);
+  
   return (
     <Navbar
       color='dark'
@@ -31,7 +33,7 @@ export function NavBar ({ user, logout, handleOpen }) {
           </NavItem>
         </Nav>
         <Nav navbar>
-          {user ? <UserLinks user={user} onClick={handleOpen} logout={logout} /> : <GuestLinks />}
+          {user ? <UserLinks user={user} logout={logout} items={items} onClick={handleOpen} /> : <GuestLinks />}
         </Nav>
       </Collapse>
     </Navbar>
@@ -51,9 +53,14 @@ function GuestLinks () {
   );
 }
 
-function UserLinks ({ user, logout, onClick }) {
+function UserLinks ({ user, logout, items, onClick }) {
   return (
     <>
+      {user.role === 'collector' && <NavItem>
+        <NavLink tag={Link} to='/cart'>
+          <i className='fa fa-shopping-cart' /> Carrito <span className='badge bg-info mx-3'>{items.length}</span>
+        </NavLink>
+      </NavItem>}
       <NavItem>
         <div className='profile-picture'>
           <img
@@ -69,9 +76,14 @@ function UserLinks ({ user, logout, onClick }) {
         </DropdownToggle>
         <DropdownMenu>
           <DropdownItem>
-            <Link to='/admin'>
-              Administración
-            </Link>
+            {user.role === 'admin' &&
+              <Link to='/admin'>
+                Administración
+              </Link>}
+            {(user.role === 'artist' || user.role === 'collector') &&
+              <Link to='/profile'>
+                Mi cuenta
+              </Link>}
           </DropdownItem>
           <DropdownItem divider />
           <DropdownItem onClick={logout}>Salir</DropdownItem>

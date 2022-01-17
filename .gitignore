@@ -108,3 +108,6 @@ dist
 
 # Mac files
 .DS_Store
+
+# Kube
+kubertenes/secret.yml

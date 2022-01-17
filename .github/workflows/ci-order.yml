@@ -6,7 +6,7 @@ on:
       - 'microservices/order/**'
     branches:
       - main
-  pull_request:
+  pull_request_target:
     paths:
       - 'microservices/order/**'
     branches:

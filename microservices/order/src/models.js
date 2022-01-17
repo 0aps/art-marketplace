@@ -1,7 +1,41 @@
 import mongoose from 'mongoose';
-import Schemas from './schemas.js';
+import Schema from './schemas.js';
 
-class OrderModel {
+class CartModel {
+  static async hasItem (itemId) {
+    return Cart.exists({ 'items.id': itemId });
+  }
+
+  toClient () {
+    return {
+      id: this._id,
+      user: this.user,
+      items: this.items
+    };
+  }
 }
 
-export const Order = mongoose.model('Order', Schemas.Order.loadClass(OrderModel));
+class OrderModel {
+  toClient () {
+    return {
+      id: this._id,
+      user: this.user,
+      cart: this.cart,
+      total: this.total,
+      createdAt: this.createdAt
+    };
+  }
+}
+
+class UserModel {
+  toClient () {
+    return {
+      id: this._id,
+      username: this.username
+    };
+  }
+}
+
+export const Cart = mongoose.model('Cart', Schema.Cart.loadClass(CartModel));
+export const Order = mongoose.model('Order', Schema.Order.loadClass(OrderModel));
+export const User = mongoose.model('User', Schema.User.loadClass(UserModel));

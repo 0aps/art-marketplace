@@ -1,16 +1,18 @@
-import mongoose from 'mongoose';
-import dotenv from 'dotenv';
-import App from './app.js';
-import views from './views.js';
+import mongoose from "mongoose";
+import dotenv from "dotenv";
+import App from "./app.js";
+import views from "./views.js";
+import subscriptions from "./subscriptions.js";
 
 dotenv.config();
 
 const app = App.create({
-  mongoose
+  mongoose,
 });
 
 await app.start({
-  views: views
+  views: views,
+  subscriptions: subscriptions,
 });
 
 export default app;
