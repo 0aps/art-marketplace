@@ -59,16 +59,16 @@ export default [{
       methods: {
         get: async (req, res) => {
           try {
-            const record = await User.findById(req.params.certificateId);
+            const record = await Certificate.findById(req.params.certificateId);
 
             if (!record) {
               return next(new RecordNotFound());
             }
 
-            const rs = fs.createReadStream('./' + data.certificatePath);
+            const rs = fs.createReadStream('./' + record.certificatePath);
             res.sendStatus(StatusCodes.OK);
             res.json(record.toClient());
-            res.setHeader('Content-Disposition', 'attachment; ' + data.artName + '.pdf');
+            res.setHeader('Content-Disposition', 'attachment; ' + record.artName + '.pdf');
             rs.pipe(res);
           } catch (e) {
             res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(e);
