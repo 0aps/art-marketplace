@@ -19,8 +19,10 @@ class OrderModel {
   toClient () {
     return {
       id: this._id,
-      id_user: this.id_user,
-      items: this.items
+      user: this.user,
+      cart: this.cart,
+      total: this.total,
+      createdAt: this.createdAt
     };
   }
 }
@@ -35,8 +37,5 @@ class UserModel {
 }
 
 export const Cart = mongoose.model('Cart', Schema.Cart.loadClass(CartModel));
-export const Order = mongoose.model(
-  'Order',
-  Schema.Order.loadClass(OrderModel)
-);
+export const Order = mongoose.model('Order', Schema.Order.loadClass(OrderModel));
 export const User = mongoose.model('User', Schema.User.loadClass(UserModel));

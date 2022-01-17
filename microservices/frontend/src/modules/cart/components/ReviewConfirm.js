@@ -14,7 +14,7 @@ export function ReviewConfirm ({ items, selectedPaymentMethod }) {
         <div className='mx-3'>
           {!selectedPaymentMethod && <p>Selecciona un método de pago ... </p>}
           {selectedPaymentMethod &&
-            <p>Tarjeta terminada en<span className='badge bg-info mx-1'>{selectedPaymentMethod.last4}</span>
+            <p>Tarjeta terminada en<span className='badge bg-info mx-1'>{selectedPaymentMethod.card.last4}</span>
             </p>}
         </div>
       </CardBody>

@@ -1,60 +1,20 @@
 import {
-  createPaymentIntent,
-  createCustomer,
-  getCustomerPaymentMethods,
+  createPayment,
+  getPaymentMethods,
   createPaymentMethod
 } from './controller/payment_controller.js';
 
 export default [{
   url: '/payments',
   methods: {
-    get:
-    // TODO
-      async (req, res) => {
-        res.json({ cosa: 1 });
-      },
-    post: createCustomer
+    post: createPayment
   },
   children: {
-    item: {
-      url: '/:paymentId',
+    cards: {
+      url: '/cards',
       methods: {
-        // TODO
-        get: (req, res, next) => {
-          res.json({
-            test: 'mychild'
-          });
-        }
-      }
-    },
-    customer: {
-      url: '/customer',
-      children: {
-        paymentMethod: {
-          url: '/payment_methods',
-          methods: {
-            post: createPaymentMethod
-          },
-          children: {
-            item: {
-              url: '/:customerId',
-              methods: {
-                get: getCustomerPaymentMethods
-              }
-            }
-          }
-        }
-      }
-    },
-    paymentIntent: {
-      url: '/payment_intent',
-      children: {
-        item: {
-          url: '/',
-          methods: {
-            post: createPaymentIntent
-          }
-        }
+        get: getPaymentMethods,
+        post: createPaymentMethod
       }
     }
   }

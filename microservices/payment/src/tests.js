@@ -13,7 +13,7 @@ describe('Payment API endpoints', () => {
   });
 
   test('should return an error if not authenticated', async () => {
-    const response = await agent.get(base + '/payments');
+    const response = await agent.get(base + '/payments/cards');
     expect(response.statusCode).toBe(StatusCodes.UNAUTHORIZED);
     expect(response.body).toHaveProperty('message');
   });
