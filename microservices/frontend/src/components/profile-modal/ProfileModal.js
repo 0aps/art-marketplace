@@ -3,21 +3,14 @@ import styled from 'styled-components'
 
 export function ProfileModal ({ user, showModal, handleClose }) {
   const [data, setData] = useState({
-      ...user
-  })
+    ...user
+})
 
   const handleInputChange = (event) => {
       setData({
-          ...data,
+          ...user,
           [event.target.name] : event.target.value
       })
-  }
-
-  const [isEditButtonClicked, setEditButton] = useState(true);
-
-  const sendData = (event) => {
-      event.preventDefault()
-      console.log('enviando datos...' + user.username + ' ' + user.email)
   }
 
   function toggleFormElements(bDisabled) { 
@@ -25,6 +18,18 @@ export function ProfileModal ({ user, showModal, handleClose }) {
     for (var i = 0; i < inputs.length; i++) {
         inputs[i].disabled = !bDisabled;
     }
+  }
+
+  function cancelEditButton(){
+    document.getElementById("myForm").reset();
+    var inputs = document.getElementsByTagName("input"); 
+    for (var i = 0; i < inputs.length; i++) {
+        inputs[i].disabled = true;
+    }
+  }
+
+  function sendData(){
+    document.getElementById("myForm").submit()
   }
 
   return(
@@ -40,55 +45,55 @@ export function ProfileModal ({ user, showModal, handleClose }) {
                 X
               </CloseModal>
               <InfoContainer>
-                <form className='form' onSubmit={sendData}>
+                <form className='form' id="myForm" action="/#/">
                   <div className="row">
                     <label>
                       Nombre de usuario:  
                     </label>
-                    <input disabled={isEditButtonClicked} type='text' defaultValue={data.username} onChange={handleInputChange} name='username'/>
+                    <input disabled={true} type='text' defaultValue={user.username} onChange={handleInputChange} name='username'/>
                   </div>
                   <div className="row">
                     <label>
                       Nombre:  
                     </label>
-                    <input disabled={isEditButtonClicked} type='text' defaultValue={data.firstname} onChange={handleInputChange} name='firstname'/>
+                    <input disabled={true} type='text' defaultValue={user.firstname} onChange={handleInputChange} name='firstname'/>
                   </div>
                   <div className="row">
                     <label>
                       Apellido:  
                     </label>
-                    <input disabled={isEditButtonClicked} type='text' defaultValue={data.lastname} onChange={handleInputChange} name='lastname'/>
+                    <input disabled={true} type='text' defaultValue={user.lastname} onChange={handleInputChange} name='lastname'/>
                   </div>
                   <div className="row">
                     <label>
                       Telefono:  
                     </label>
-                    <input disabled={isEditButtonClicked} type='tel' defaultValue={data.info.phone} onChange={handleInputChange} name='phone'/>
+                    <input disabled={true} type='tel' defaultValue={user.info.phone} onChange={handleInputChange} name='phone'/>
                   </div>
                   <div className="row">
                     <label>
                       Correo Electronico:  
                     </label>
-                    <input disabled={isEditButtonClicked} type='email' defaultValue={data.email} onChange={handleInputChange} name='address'/>
+                    <input disabled={true} type='email' defaultValue={user.email} onChange={handleInputChange} name='address'/>
                   </div>
                   <div className="row">
                     <label>
                       Contraseña:  
                     </label>
-                    <input disabled={isEditButtonClicked} type='password' defaultValue={data.password} onChange={handleInputChange} name='password'/>
+                    <input disabled={true} type='password' defaultValue={user.password} onChange={handleInputChange} name='password'/>
                   </div>
                   <div className="row">
                     <label>
                       Confirmar Contraseña:  
                     </label>
-                    <input disabled={isEditButtonClicked} type='password' defaultValue={data.password_confirm} onChange={handleInputChange} name='password_confirm'/>
+                    <input disabled={true} type='password' defaultValue={user.password_confirm} onChange={handleInputChange} name='password_confirm'/>
                   </div>
                   <ButtonsContainer>
-                    <button>Aceptar</button>
+                    <button type='submit' onClick={sendData}>Aceptar</button>
                   </ButtonsContainer>
               </form>
               <button className="editButton" onClick={toggleFormElements}>Editar</button>
-              <button className="cancelEditButton" onClick={setEditButton}>Cancelar</button>
+              <button className="cancelEditButton" onClick={cancelEditButton}>Cancelar</button>
             </InfoContainer>
           </ModalContainer>
         </Overlay>
@@ -109,7 +114,7 @@ display: flex;
 align-items: center;
 overflow-y: auto;
 justify-content: center;
-index-z: 20;
+z-index: 100000 !important;
 `
 
 const ModalContainer = styled.div`
@@ -120,6 +125,7 @@ position: relative;
 border-radius: 5px;
 box-shadow: rgba(100,100,111,0.2) 0px 7px 29px 0px;
 padding: 20px;
+overflow-y: auto;
 `
 
 const ModalHeader = styled.div`
@@ -182,5 +188,4 @@ const InfoContainer = styled.div`
   display: table;
   clear: both;
 }
-
 `;
