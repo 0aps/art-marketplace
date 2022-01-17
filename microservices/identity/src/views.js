@@ -15,10 +15,42 @@ export default [{
     get: ['admin']
   },
   methods: {
+    /**
+     * @swagger
+     * /users:
+     *   get:
+     *     description: Get the list of all users
+     *     responses:
+     *       200:
+     *         description: An array with the list of users
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/UserList'
+     */
     get: async (req, res) => {
       const records = await User.find({});
       res.json(records.map(record => record.toClient()));
     },
+    /**
+     * @swagger
+     * /users:
+     *   post:
+     *     description: Create a new user
+     *     requestBody:
+     *       required: true
+     *       content:
+     *         application/json:
+     *           schema:
+     *             $ref: '#/components/schemas/UserPayload'
+     *     responses:
+     *       201:
+     *         description: Object with the new user created
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/User'
+     */
     post: async (req, res, next) => {
       const form = req.body;
 
@@ -29,7 +61,7 @@ export default [{
         }
 
         const user = await User.new(form);
-        res.status(StatusCodes.CREATED).send(user.toClient());
+        res.status(StatusCodes.CREATED).json(user.toClient());
       } catch (e) {
         res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(e);
       }
@@ -40,6 +72,21 @@ export default [{
       url: '/register',
       access: 'public',
       methods: {
+        /**
+         * @swagger
+         * /users/register:
+         *   post:
+         *     description: Register a new user
+         *     requestBody:
+         *       required: true
+         *       content:
+         *         application/json:
+         *           schema:
+         *             $ref: '#/components/schemas/UserPayload'
+         *     responses:
+         *       201:
+         *         description: The user was registered successfully
+         */
         post: async (req, res, next) => {
           const form = req.body;
           const { email } = form;
@@ -74,6 +121,21 @@ export default [{
       url: '/confirm',
       access: 'public',
       methods: {
+        /**
+         * @swagger
+         * /users/confirm:
+         *   post:
+         *     description: Confirm registration of a new user
+         *     requestBody:
+         *       required: true
+         *       content:
+         *         application/json:
+         *           schema:
+         *             $ref: '#/components/schemas/ConfirmationPayload'
+         *     responses:
+         *       201:
+         *         description: The user was activated successfully
+         */
         post: async (req, res, next) => {
           const { token } = req.body;
 
@@ -103,6 +165,21 @@ export default [{
       url: '/login',
       access: 'public',
       methods: {
+        /**
+         * @swagger
+         * /users/login:
+         *   post:
+         *     description: Login the user into the system
+         *     requestBody:
+         *       required: true
+         *       content:
+         *         application/json:
+         *           schema:
+         *             $ref: '#/components/schemas/LoginPayload'
+         *     responses:
+         *       200:
+         *         description: The user session was created
+         */
         post: async (req, res, next) => {
           const { email, password } = req.body;
 
@@ -137,6 +214,21 @@ export default [{
       url: '/forgotPassword',
       access: 'public',
       methods: {
+        /**
+         * @swagger
+         * /users/forgotPassword:
+         *   post:
+         *     description: Trigger reset password of user
+         *     requestBody:
+         *       required: true
+         *       content:
+         *         application/json:
+         *           schema:
+         *             $ref: '#/components/schemas/ForgotPasswordPayload'
+         *     responses:
+         *       201:
+         *         description: The restore record was created
+         */
         post: async (req, res, next) => {
           const { email } = req.body;
 
@@ -170,6 +262,21 @@ export default [{
       url: '/restore',
       access: 'public',
       methods: {
+        /**
+         * @swagger
+         * /users/restore:
+         *   post:
+         *     description: Restore the user password
+         *     requestBody:
+         *       required: true
+         *       content:
+         *         application/json:
+         *           schema:
+         *             $ref: '#/components/schemas/RestorePayload'
+         *     responses:
+         *       200:
+         *         description: The user password was updated successfully
+         */
         post: async (req, res, next) => {
           const form = req.body;
           const token = form.token;
@@ -206,6 +313,19 @@ export default [{
     me: {
       url: '/me',
       methods: {
+        /**
+         * @swagger
+         * /users/me:
+         *   get:
+         *     description: Get the current user information
+         *     responses:
+         *       200:
+         *         description: User in the current session
+         *         content:
+         *           application/json:
+         *             schema:
+         *               $ref: '#/components/schemas/User'
+         */
         get: async (req, res, next) => {
           const existingUser = req.app.locals.user;
           const email = existingUser ? existingUser.email.trim() : '';
@@ -234,6 +354,19 @@ export default [{
         delete: ['admin']
       },
       methods: {
+        /**
+         * @swagger
+         * /users/{userId}:
+         *   get:
+         *     description: Get a particular user information
+         *     responses:
+         *       200:
+         *         description: User information
+         *         content:
+         *           application/json:
+         *             schema:
+         *               $ref: '#/components/schemas/User'
+         */
         get: async (req, res, next) => {
           try {
             const record = await User.findById(req.params.userId);
@@ -247,6 +380,19 @@ export default [{
             res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(e);
           }
         },
+        /**
+         * @swagger
+         * /users/{userId}:
+         *   put:
+         *     description: Update a particular user information
+         *     responses:
+         *       200:
+         *         description: User information
+         *         content:
+         *           application/json:
+         *             schema:
+         *               $ref: '#/components/schemas/User'
+         */
         put: async (req, res, next) => {
           try {
             const { user } = req.locals;
@@ -292,6 +438,15 @@ export default [{
             res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(e);
           }
         },
+        /**
+         * @swagger
+         * /users/{userId}:
+         *   delete:
+         *     description: Delete a particular user information
+         *     responses:
+         *       204:
+         *         description: User was deleted successfully
+         */
         delete: async (req, res, next) => {
           try {
             const record = await User.findById(req.params.userId);
