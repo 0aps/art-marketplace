@@ -1,20 +1,34 @@
-import { InvalidRequest, RecordNotFound } from 'art-marketplace-common';
-import { StatusCodes } from 'http-status-codes';
-import { Cart, Order } from './models.js';
+import { listAllOrder, readAnOrder } from "./controller/order_controller.js";
+import { InvalidRequest, RecordNotFound } from "art-marketplace-common";
+import { StatusCodes } from "http-status-codes";
+import { Cart } from "./models.js";
 
 export default [
   {
-    url: '/cart',
+    url: "/cart",
     methods: {
+      /**
+       * @swagger
+       * /cart:
+       *   get:
+       *     description: Get the active cart by the current user
+       *     responses:
+       *       200:
+       *         description: An array with the list of users
+       *         content:
+       *           application/json:
+       *             schema:
+       *               $ref: '#/components/schemas/Cart'
+       */
       get: async (req, res) => {
         const user = req.app.locals.user;
 
         try {
-          let cart = await Cart.findOne({ user: user.id, state: 'active' });
+          let cart = await Cart.findOne({ user: user.id, state: "active" });
           if (!cart) {
             cart = new Cart({
               user: user.id,
-              items: []
+              items: [],
             });
             await cart.save();
           }
@@ -23,12 +37,31 @@ export default [
         } catch (e) {
           res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(e.message);
         }
-      }
+      },
     },
     children: {
       item: {
-        url: '/:cartId',
+        url: "/:cartId",
         methods: {
+          /**
+           * @swagger
+           * /cart/{cartId}:
+           *   put:
+           *     description: Update a particular cart
+           *     parameters:
+           *       - name: cartId
+           *         type: string
+           *         in: path
+           *         required: true
+           *     requestBody:
+           *       required: true
+           *       content:
+           *         application/json:
+           *           schema:
+           *             $ref: '#/components/schemas/UserPayload'
+           *     responses:
+           *       200:
+           */
           patch: async (req, res, next) => {
             const cartId = req.params.cartId;
             const { item } = req.body;
@@ -39,7 +72,11 @@ export default [
                 return next(new RecordNotFound());
               }
               if (!item) {
-                return next(new InvalidRequest('Debes espeficiar una obra para agregar al carrito.'));
+                return next(
+                  new InvalidRequest(
+                    "Debes espeficiar una obra para agregar al carrito."
+                  )
+                );
               }
 
               cart.items.push(item);
@@ -49,12 +86,30 @@ export default [
             } catch (e) {
               res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(e.message);
             }
-          }
+          },
         },
         children: {
           item: {
-            url: '/:artworkId',
+            url: "/:artworkId",
             methods: {
+              /**
+               * @swagger
+               * /cart/{cartId}/{artworkId}:
+               *   delete:
+               *     description: Delete a particular artwork from a particular cart
+               *     parameters:
+               *       - name: artworkId
+               *         type: string
+               *         in: path
+               *         required: true
+               *       - name: cartId
+               *         type: string
+               *         in: path
+               *         required: true
+               *     responses:
+               *       204:
+               *         description: User was deleted successfully
+               */
               delete: async (req, res, next) => {
                 const cartId = req.params.cartId;
                 const artworkId = req.params.artworkId;
@@ -66,46 +121,67 @@ export default [
 
                 const hasItem = await Cart.hasItem(artworkId);
                 if (!hasItem) {
-                  return next(new InvalidRequest('La obra no está en el carrito.'));
+                  return next(
+                    new InvalidRequest("La obra no está en el carrito.")
+                  );
                 }
 
-                cart.items = cart.items.filter($item => $item.id !== artworkId);
+                cart.items = cart.items.filter(
+                  ($item) => $item.id !== artworkId
+                );
                 await cart.save();
 
                 res.sendStatus(StatusCodes.NO_CONTENT);
-              }
-            }
-          }
-        }
-      }
-    }
+              },
+            },
+          },
+        },
+      },
+    },
   },
   {
-    url: '/orders',
+    url: "/orders",
     methods: {
-      get: async (req, res) => {
-        const records = await Order.find({});
-        res.json(records);
-      },
-      post: async (req, res) => {
-        const artwork = new Order({
-          name: req.body.name
-        });
-
-        await artwork.save();
-        res.sendStatus(StatusCodes.OK);
-      }
+      /**
+       * @swagger
+       * /orders:
+       *   get:
+       *     description: Get the list of all orders
+       *     responses:
+       *       200:
+       *         description: An array with the list of orders
+       *         content:
+       *           application/json:
+       *             schema:
+       *               $ref: '#/components/schemas/OrderList'
+       */
+      get: listAllOrder,
     },
     children: {
       item: {
-        url: '/:orderId',
+        url: "/:orderId",
         methods: {
-          get: (req, res, next) => {
-            res.json({
-              test: 'mychild'
-            });
-          }
-        }
-      }
-    }
-  }];
+          /**
+           * @swagger
+           * /orders/{orderId}:
+           *   get:
+           *     description: Get the a specific order
+           *     parameters:
+           *       - name: orderId
+           *         type: string
+           *         in: path
+           *         required: true
+           *     responses:
+           *       200:
+           *         description: An Order
+           *         content:
+           *           application/json:
+           *             schema:
+           *               $ref: '#/components/schemas/Order'
+           */
+          get: readAnOrder,
+        },
+      },
+    },
+  },
+];
