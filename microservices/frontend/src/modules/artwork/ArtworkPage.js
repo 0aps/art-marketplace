@@ -83,10 +83,10 @@ export function ArtworkPage () {
                   {state.certificate != null &&
                       <Button
                       className='btn btn-sm float-end'
-                      onClick={() => showCertificate(state.certificate.id, setState)}
-                      >
-                        <h5>Ver certificado</h5>
-                      </Button>
+                      onClick={() => showCertificate(state.artwork, state.certificate.id, setState)}
+                    >
+                      <h5>Ver certificado</h5>
+                    </Button>
                   }
                   <Button
                     className='btn btn-sm btn-success float-end'
@@ -159,6 +159,7 @@ async function loadCertificate (artworkName) {
     return certificate;
 
   } catch (error) {
+    toast.error(`Error al cargar el certificado. ${error.message}`);
     return null;
   }
   
@@ -188,12 +189,18 @@ async function createCertificate (artwork, setState) {
 
 }
 
-async function showCertificate (id, setState) {
+async function showCertificate (artwork, certificateId, setState) {
   try {
-    await api.certificate.get(id);
+
+    await api.certificate.get(certificateId);
+
+    const id = artwork.id;
+
+    toast.success(`Certificado visualizado exitosamente.`);
+    await loadArtwork({ id, setState });
 
   } catch (error) {
-    toast.error(`Error al crear el certificado. ${error.message}`);
+    toast.error(`Error al cargar el certificado. ${error.message}`);
     setState((state) => ({ ...state, loaded: true }));
   }
 
