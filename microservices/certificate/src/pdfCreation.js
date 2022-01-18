@@ -16,12 +16,7 @@ class pdfCreation {
   static async createPDF (data) {
     const browser = await puppeteer.launch({
       headless: true,
-      args: [
-        "--disable-gpu",
-        "--disable-dev-shm-usage",
-        "--disable-setuid-sandbox",
-        "--no-sandbox",
-      ]
+      args: ['--no-sandbox','--disable-dev-shm-usage']
     });
     const page = await browser.newPage();
     const options = {

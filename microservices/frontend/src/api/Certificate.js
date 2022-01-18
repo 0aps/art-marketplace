@@ -10,6 +10,10 @@ class CertificateAPI extends Base {
     return this.apiClient.post(this.base, payload);
   }
 
+  get (id) {
+    return this.apiClient.get(this.base);
+  }
+
 }
 
 export default CertificateAPI;
