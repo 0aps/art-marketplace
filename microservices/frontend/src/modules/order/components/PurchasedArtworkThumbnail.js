@@ -1,7 +1,7 @@
-import { Badge, Button, Card, CardBody, CardImg, CardSubtitle, CardText, CardTitle, Row } from 'reactstrap';
+import { Badge, Card, CardBody, CardImg, CardSubtitle, CardText, CardTitle, Row } from 'reactstrap';
 import { Link } from 'react-router-dom';
 
-export function ArtworkThumbnail ({ artwork, onAddToCart }) {
+export function PurchasedArtworkThumbnail ({ artwork }) {
   return (
     <Card className='grid-item card-size'>
       <Link to={'/artwork/' + artwork.id}>
@@ -41,14 +41,6 @@ export function ArtworkThumbnail ({ artwork, onAddToCart }) {
         </CardText>
         <Row>
           <h3>${artwork.price.toFixed(2)}</h3>
-        </Row>
-        <Row>
-          <Button
-            className='btn btn-sm btn-success'
-            onClick={() => onAddToCart(artwork)}
-          >
-            <h5><i className='fa fa-cart-plus' aria-hidden='true'> Añadir al carrito</i></h5>
-          </Button>
         </Row>
 
       </CardBody>

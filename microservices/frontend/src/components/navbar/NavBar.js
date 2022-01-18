@@ -6,7 +6,7 @@ import {
 } from 'reactstrap';
 import { useStore } from '../../state/storeHooks';
 
-export function NavBar ({ user, logout }) {
+export function NavBar ({ user, logout, toggleProfileModal }) {
   const { items } = useStore(({ cart }) => cart);
 
   return (
@@ -33,7 +33,12 @@ export function NavBar ({ user, logout }) {
           </NavItem>
         </Nav>
         <Nav navbar>
-          {user ? <UserLinks user={user} logout={logout} items={items} /> : <GuestLinks />}
+          {user
+            ? <UserLinks
+                user={user} logout={logout} items={items}
+                onClickUserImage={toggleProfileModal}
+              />
+            : <GuestLinks />}
         </Nav>
       </Collapse>
     </Navbar>
@@ -53,7 +58,7 @@ function GuestLinks () {
   );
 }
 
-function UserLinks ({ user, logout, items }) {
+function UserLinks ({ user, logout, items, onClickUserImage }) {
   return (
     <>
       {user.role === 'collector' && <NavItem>
@@ -64,6 +69,7 @@ function UserLinks ({ user, logout, items }) {
       <NavItem>
         <div className='profile-picture'>
           <img
+            onClick={onClickUserImage}
             className='pp-user'
             src='images/profile_placeholder.svg' alt='profile'
           />

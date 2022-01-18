@@ -19,7 +19,7 @@ export async function createPayment (req, res, next) {
   try {
     const paymentIntent = await stripe.paymentIntents.create({
       currency: 'EUR',
-      amount: amount,
+      amount: amount.toFixed(2) * 100,
       payment_method: paymentMethodId,
       customer: customerStripeId
     });
@@ -99,6 +99,17 @@ export async function createPaymentMethod (req, res) {
   try {
     const paymentMethodResult = await stripe.customers.createSource(customerId, { source: token.id });
     res.status(StatusCodes.CREATED).json(paymentMethodResult);
+  } catch (e) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(e.message);
+  }
+}
+
+export async function deletePaymentMethod (req, res) {
+  const { stripeAccount: customerId } = await getCurrentUser(req);
+
+  try {
+    await stripe.customers.deleteSource(customerId, req.params.cardId);
+    res.sendStatus(StatusCodes.NO_CONTENT);
   } catch (e) {
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(e.message);
   }

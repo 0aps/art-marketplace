@@ -9,15 +9,20 @@ import {
   NavItem,
   NavLink,
   Row,
-  TabContent, Table,
+  TabContent,
   TabPane
 } from 'reactstrap';
-import { Link } from 'react-router-dom';
+import { ArtworkList } from './ArtworkList';
+import { AddArtworkModal } from './AddArtworkModal';
+import swal from 'sweetalert';
 
 export function ArtistPage ({ user }) {
   const [state, setState] = useState({
     loaded: false,
-    artworks: []
+    showModal: false,
+    artworks: [],
+    categories: [],
+    selectedItem: {}
   });
 
   useEffect(() => {
@@ -26,6 +31,13 @@ export function ArtistPage ({ user }) {
 
   return (state.loaded
     ? <>
+      {state.showModal && <AddArtworkModal
+        isOpen={state.showModal}
+        categories={state.categories}
+        item={state.selectedItem}
+        onAddArtwork={(params) => onAddItem({ ...params, setState, user })}
+        toggle={() => toggleAddArtworkModal({ setState })}
+                          />}
       <Container fluid className='py-5'>
         <Row>
           <Col
@@ -47,14 +59,17 @@ export function ArtistPage ({ user }) {
                     <Col md={12}>
                       <ArtworkList
                         artworks={state.artworks}
-                        onEditItem={onEditItem}
-                        onRemoveItem={onRemoveItem}
+                        onEditItem={(item) => onEditItem({ item, setState })}
+                        onRemoveItem={(item) => onRemoveItem({ user, setState, item })}
                       />
                     </Col>
                   </Row>
-                  <Row>
+                  <Row className='mt-4'>
                     <Col md={12}>
-                      <div className='float-start'><Link to='/'><i className='fa fa-plus-circle' /> Agregar obra</Link></div>
+                      <h6><a className='pointer' onClick={() => toggleAddArtworkModal({ setState })}>
+                        <i className='fa fa-plus-circle' /> Agregar obra
+                      </a>
+                      </h6>
                     </Col>
                   </Row>
                 </TabPane>
@@ -67,83 +82,77 @@ export function ArtistPage ({ user }) {
     : <div className='loader' />);
 }
 
-function ArtworkList ({ artworks, onEditItem, onRemoveItem }) {
-  return (
-    <>
-      {artworks.length === 0 &&
-        <h4>No tienes obras creadas. Agrega una! </h4>}
-      {artworks.length > 0 &&
-        <Table striped>
-          <thead>
-            <tr>
-              <th />
-              <th>
-                Obra
-              </th>
-              <th>
-                Precio
-              </th>
-              <th>
-                Categoría
-              </th>
-              <th>
-                Creada en
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {artworks.map(item =>
-              <tr key={item.id}>
-                <th scope='row'>
-                  <a
-                    className='pointer'
-                    onClick={() => onEditItem(item)}
-                  >
-                    <span><i className='fa fa-edit' /></span>
-                  </a>
-                  <a
-                    className='pointer'
-                    onClick={() => onRemoveItem(item)}
-                  >
-                    <span><i className='fa fa-trash' /></span>
-                  </a>
-                </th>
-                <td>
-                  {item.name}
-                </td>
-                <td>
-                  ${item.price.toFixed(2)}
-                </td>
-                <td>
-                  {item.category.name}
-                </td>
-                <td>
-                  {(new Date(item.createdAt * 1000).toLocaleDateString())}
-                </td>
-              </tr>)}
-          </tbody>
-        </Table>}
-    </>
-  );
-}
-
 async function load ({ user, setState }) {
   setState((state) => ({ ...state, loaded: false }));
   try {
     const { records } = await api.artwork.list({
       user: user.id
     });
-    setState((state) => ({ ...state, artworks: records, loaded: true }));
+    const categories = await api.artwork.getCategories();
+    setState((state) => ({ ...state, artworks: records, categories, loaded: true }));
   } catch (e) {
     toast.error(`Error al cagar la información del usuario. ${e.message}`);
     setState((state) => ({ ...state, loaded: true }));
   }
 }
 
-async function onEditItem ({ item }) {
-
+function toggleAddArtworkModal ({ setState }) {
+  setState(state => ({
+    ...state,
+    showModal: !state.showModal,
+    selectedItem: !state.showModal ? {} : state.selectedItem
+  }));
 }
 
-async function onRemoveItem ({ item }) {
+async function onAddItem ({ user, state, setState }) {
+  setState((state) => ({ ...state, loaded: false }));
+  try {
+    if (state.model.id) {
+      await api.artwork.update(state.model.id, getFormData({ ...state.model, user: user.id }));
+    } else {
+      await api.artwork.create(getFormData({ ...state.model, user: user.id }));
+    }
 
+    toast.success(`Obra ${state.model.id ? 'actualizada' : 'creada'} exitosamente.`);
+    setState((state) => ({ ...state, showModal: false, selectedItem: {} }));
+    await load({ user, setState });
+  } catch (e) {
+    toast.error(`Error al crear la obra de arte. ${e.message}`);
+    setState((state) => ({ ...state, loaded: true }));
+  }
+}
+
+async function onEditItem ({ item, setState }) {
+  setState((state) => ({ ...state, selectedItem: item, showModal: true }));
+}
+
+async function onRemoveItem ({ user, setState, item }) {
+  const confirm = await swal({
+    title: '¿estás seguro que quieres eliminar esta obra?',
+    icon: 'warning',
+    buttons: true,
+    dangerMode: true
+  });
+
+  if (confirm) {
+    setState((state) => ({ ...state, loaded: false }));
+    try {
+      await api.artwork.delete(item.id);
+      toast.success('Obra eliminada exitosamente.');
+      await load({ user, setState });
+    } catch (e) {
+      toast.error(`Error al borrar la obra. ${e.message}`);
+      setState((state) => ({ ...state, loaded: true }));
+    }
+  }
+}
+
+function getFormData (model) {
+  const formData = new FormData();
+  const keys = Object.keys(model);
+  keys.forEach(key => {
+    formData.append(key, model[key]);
+  });
+
+  return formData;
 }

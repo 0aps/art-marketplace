@@ -5,10 +5,11 @@ import { loadStripe } from '@stripe/stripe-js';
 import { CardElement, Elements } from '@stripe/react-stripe-js';
 import api from '../../../api';
 import { toast } from 'react-toastify';
+import swal from 'sweetalert';
 
 const stripePromise = loadStripe(process.env.STRIPE_KEY);
 
-export function PaymentMethodList ({ paymentMethods, onRemoveItem }) {
+export function PaymentMethodList ({ paymentMethods }) {
   const [state, setState] = useState({
     showModal: false,
     paymentMethods: paymentMethods,
@@ -48,7 +49,7 @@ export function PaymentMethodList ({ paymentMethods, onRemoveItem }) {
                 <th scope='row'>
                   <a
                     className='pointer'
-                    onClick={() => onRemoveItem(paymentMethod)}
+                    onClick={() => onRemoveItem({ setState, paymentMethod, paymentMethods })}
                   >
                     <span><i className='fa fa-trash' /></span>
                   </a>
@@ -69,11 +70,11 @@ export function PaymentMethodList ({ paymentMethods, onRemoveItem }) {
         <Col md={12}>
           <h6><a className='pointer' onClick={() => togglePaymentMethodModal({ setState })}>
             <i className='fa fa-plus-circle' /> Agregar método de pago
-          </a>
+              </a>
           </h6>
         </Col>
       </Row>
-      </>
+    </>
     : <div className='loader' />);
 }
 
@@ -93,7 +94,32 @@ async function onAddPaymentMethod ({ event, elements, stripe, setState }) {
     const paymentMethods = await api.payment.getPaymentMethods();
     setState((state) => ({ ...state, paymentMethods, loaded: true, showModal: false }));
   } catch (e) {
-    toast.error(`Error al cagar la información del usuario. ${e.message}`);
+    toast.error(`Error al cagar los métodos de pago. ${e.message}`);
     setState((state) => ({ ...state, loaded: true }));
+  }
+}
+
+async function onRemoveItem ({ setState, paymentMethod, paymentMethods }) {
+  const confirm = await swal({
+    title: '¿estás seguro que quieres eliminar este método de pago?',
+    icon: 'warning',
+    buttons: true,
+    dangerMode: true
+  });
+
+  if (confirm) {
+    setState((state) => ({ ...state, loaded: false }));
+    try {
+      await api.payment.deletePaymentMethod(paymentMethod.id);
+      toast.success('Método de pago eliminado exitosamente.');
+      setState((state) => ({
+        ...state,
+        paymentMethods: paymentMethods.filter(e => e.id !== paymentMethod.id),
+        loaded: true
+      }));
+    } catch (e) {
+      toast.error(`Error al borrar el método de pago. ${e.message}`);
+      setState((state) => ({ ...state, loaded: true }));
+    }
   }
 }

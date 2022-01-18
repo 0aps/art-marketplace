@@ -88,3 +88,12 @@ nav li.dropdown.show.nav-item > div {
 .pointer {
     cursor: pointer;
 }
+
+#dashboard .artwork-card-image {
+   height: 300px;
+   width: 100%;
+}
+
+#recommended .card-size, #cartOrder .card-size {
+   width: 400px;
+}

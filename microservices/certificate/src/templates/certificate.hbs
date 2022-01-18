@@ -1,0 +1,98 @@
+<html>
+     <head>
+        <style type='text/css'>
+            body, html {
+                margin: 0;
+                padding: 0;
+            }
+            body {
+                color: black;
+                display: table;
+                font-family: Georgia, serif;
+                font-size: 24px;
+                text-align: center;
+            }
+            .container {
+                border: 20px solid tan;
+                width: 793.92px;
+                height: 1122px;
+                display: table-cell;
+            }
+            .artwork {
+                width:300px;
+                height:300px;
+                margin: 5px;
+            }
+
+            .marquee {
+                color: tan;
+                font-size: 48px;
+                margin: 20px;
+            }
+
+            table.desc {
+                <!-- border: 2px solid black; -->
+                width: 95%;
+                margin: 20px;
+            }
+
+            table.info {
+                <!-- border: 2px solid black; -->
+                width: 60%;
+                margin: 20px;
+            }
+
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="marquee">
+                Certificado de Autenticidad
+            </div>
+            <div>
+                <img class="artwork" src="" alt="Imagen de la Obra">
+            </div>
+            <div>
+                <table class="desc">
+                    <tr>
+                        <th style="width:70%"></th>
+                        <th style="width:5%"></th>
+                        <th style="width:25%"></th>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>Título de la obra : </b><br>
+                            {{artName}} <br>
+                            <br>
+                            <b>Descripción de la obra : </b><br>
+                            {{artDescription}} <br>
+                            <br>
+                            <b>Categoria de la obra : </b><br>
+                            {{categoryName}}
+                        </td>
+                        <td>
+
+                        </td>
+                        <td>
+                            <b>Usuario del Artista : </b><br>
+                            {{username}} <br>
+                            <br>
+                            <b>Fecha de creación de la obra : </b><br>
+                            {{artCreationDate}} <br>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            
+
+            <table class="info">
+                <tr>
+                    <td>
+                        <b>Firma del Artista:</b> <br>
+                        {{username}} <br>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </body>
+</html>

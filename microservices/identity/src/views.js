@@ -440,6 +440,14 @@ export default [{
               record.lastname = payload.lastname;
             }
 
+            if (payload.phone) {
+              record.info.phone = payload.phone;
+            }
+
+            if (payload.address) {
+              record.info.address = payload.address;
+            }
+
             if (payload.state) {
               record.login.state = payload.state;
             }

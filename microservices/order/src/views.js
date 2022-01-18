@@ -9,6 +9,19 @@ import { Cart } from './models.js';
 export default [{
   url: '/cart',
   methods: {
+     /**
+     * @swagger
+     * /cart:
+     *   get:
+     *     description: Get the active cart by the current user
+     *     responses:
+     *       200:
+     *         description: An array with the list of users
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/Cart'
+     */
     get: async (req, res) => {
       const user = req.app.locals.user;
 
@@ -32,6 +45,25 @@ export default [{
     item: {
       url: '/:cartId',
       methods: {
+        /**
+         * @swagger
+         * /cart/{cartId}:
+         *   put:
+         *     description: Update a particular cart
+         *     parameters:
+         *       - name: cartId
+         *         type: string
+         *         in: path
+         *         required: true
+         *     requestBody:
+         *       required: true
+         *       content:
+         *         application/json:
+         *           schema:
+         *             $ref: '#/components/schemas/UserPayload'
+         *     responses:
+         *       200:
+         */
         patch: async (req, res, next) => {
           const cartId = req.params.cartId;
           const { item } = req.body;
@@ -62,6 +94,24 @@ export default [{
         item: {
           url: '/:artworkId',
           methods: {
+            /**
+             * @swagger
+             * /cart/{cartId}/{artworkId}:
+             *   delete:
+             *     description: Delete a particular artwork from a particular cart
+             *     parameters:
+             *       - name: artworkId
+             *         type: string
+             *         in: path
+             *         required: true
+             *       - name: cartId
+             *         type: string
+             *         in: path
+             *         required: true
+             *     responses:
+             *       204:
+             *         description: User was deleted successfully
+             */
             delete: async (req, res, next) => {
               const cartId = req.params.cartId;
               const artworkId = req.params.artworkId;
@@ -94,12 +144,43 @@ export default [{
 {
   url: '/orders',
   methods: {
+    /**
+     * @swagger
+     * /orders:
+     *   get:
+     *     description: Get the list of all orders
+     *     responses:
+     *       200:
+     *         description: An array with the list of orders
+     *         content:
+     *           application/json:
+     *             schema:
+     *               $ref: '#/components/schemas/OrderList'
+     */
     get: listAllOrder
   },
   children: {
     item: {
       url: '/:orderId',
       methods: {
+        /**
+         * @swagger
+         * /orders/{orderId}:
+         *   get:
+         *     description: Get the a specific order
+         *     parameters:
+         *       - name: orderId
+         *         type: string
+         *         in: path
+        *         required: true
+         *     responses:
+         *       200:
+         *         description: An Order
+         *         content:
+         *           application/json:
+         *             schema:
+         *               $ref: '#/components/schemas/Order'
+         */
         get: readAnOrder
       }
     }

@@ -20,7 +20,7 @@ export function Dashboard () {
   }, [state.page]);
 
   return (state.loaded
-    ? <Container>
+    ? <Container id='dashboard'>
       <ListArtwork artworks={state.artworks} onAddToCart={onAddToCart} className='py-5' />
       <Pagination listClassName='justify-content-center'>
         <PaginationItem>
