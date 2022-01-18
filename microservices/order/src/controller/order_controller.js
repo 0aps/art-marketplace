@@ -35,7 +35,7 @@ export async function createAnOrder (payment) {
  * Buscar por el atributo id
  */
 export async function readAnOrder (req, res) {
-  const record = await Order.findById(req.params.orderId);
+  const record = await Order.findById(req.params.orderId).populate('cart');
   res.json(record);
 }
 
