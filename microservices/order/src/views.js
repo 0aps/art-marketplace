@@ -1,11 +1,11 @@
-import { listAllOrder, readAnOrder } from "./controller/order_controller.js";
-import { InvalidRequest, RecordNotFound } from "art-marketplace-common";
-import { StatusCodes } from "http-status-codes";
-import { Cart } from "./models.js";
+import { listAllOrder, readAnOrder } from './controller/order_controller.js';
+import { InvalidRequest, RecordNotFound } from 'art-marketplace-common';
+import { StatusCodes } from 'http-status-codes';
+import { Cart } from './models.js';
 
 export default [
   {
-    url: "/cart",
+    url: '/cart',
     methods: {
       /**
        * @swagger
@@ -24,11 +24,11 @@ export default [
         const user = req.app.locals.user;
 
         try {
-          let cart = await Cart.findOne({ user: user.id, state: "active" });
+          let cart = await Cart.findOne({ user: user.id, state: 'active' });
           if (!cart) {
             cart = new Cart({
               user: user.id,
-              items: [],
+              items: []
             });
             await cart.save();
           }
@@ -37,11 +37,11 @@ export default [
         } catch (e) {
           res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(e.message);
         }
-      },
+      }
     },
     children: {
       item: {
-        url: "/:cartId",
+        url: '/:cartId',
         methods: {
           /**
            * @swagger
@@ -74,7 +74,7 @@ export default [
               if (!item) {
                 return next(
                   new InvalidRequest(
-                    "Debes espeficiar una obra para agregar al carrito."
+                    'Debes espeficiar una obra para agregar al carrito.'
                   )
                 );
               }
@@ -86,11 +86,11 @@ export default [
             } catch (e) {
               res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(e.message);
             }
-          },
+          }
         },
         children: {
           item: {
-            url: "/:artworkId",
+            url: '/:artworkId',
             methods: {
               /**
                * @swagger
@@ -122,7 +122,7 @@ export default [
                 const hasItem = await Cart.hasItem(artworkId);
                 if (!hasItem) {
                   return next(
-                    new InvalidRequest("La obra no está en el carrito.")
+                    new InvalidRequest('La obra no está en el carrito.')
                   );
                 }
 
@@ -132,15 +132,15 @@ export default [
                 await cart.save();
 
                 res.sendStatus(StatusCodes.NO_CONTENT);
-              },
-            },
-          },
-        },
-      },
-    },
+              }
+            }
+          }
+        }
+      }
+    }
   },
   {
-    url: "/orders",
+    url: '/orders',
     methods: {
       /**
        * @swagger
@@ -155,11 +155,11 @@ export default [
        *             schema:
        *               $ref: '#/components/schemas/OrderList'
        */
-      get: listAllOrder,
+      get: listAllOrder
     },
     children: {
       item: {
-        url: "/:orderId",
+        url: '/:orderId',
         methods: {
           /**
            * @swagger
@@ -179,9 +179,9 @@ export default [
            *             schema:
            *               $ref: '#/components/schemas/Order'
            */
-          get: readAnOrder,
-        },
-      },
-    },
-  },
+          get: readAnOrder
+        }
+      }
+    }
+  }
 ];

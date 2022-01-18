@@ -2,12 +2,12 @@ import {
   createPayment,
   getPaymentMethods,
   createPaymentMethod,
-  deletePaymentMethod,
-} from "./controller/payment_controller.js";
+  deletePaymentMethod
+} from './controller/payment_controller.js';
 
 export default [
   {
-    url: "/payments",
+    url: '/payments',
     methods: {
       /**
        * @swagger
@@ -28,11 +28,11 @@ export default [
        *             schema:
        *               $ref: '#/components/schemas/Payment'
        */
-      post: createPayment,
+      post: createPayment
     },
     children: {
       cards: {
-        url: "/cards",
+        url: '/cards',
         methods: {
           /**
            * @swagger
@@ -67,11 +67,11 @@ export default [
            *             schema:
            *               $ref: '#/components/schemas/PaymentMethod'
            */
-          post: createPaymentMethod,
+          post: createPaymentMethod
         },
         children: {
           item: {
-            url: "/:cardId",
+            url: '/:cardId',
             methods: {
               /**
                * @swagger
@@ -87,11 +87,11 @@ export default [
                *       204:
                *         description: Payment method was deleted successfully
                */
-              delete: deletePaymentMethod,
-            },
-          },
-        },
-      },
-    },
-  },
+              delete: deletePaymentMethod
+            }
+          }
+        }
+      }
+    }
+  }
 ];
