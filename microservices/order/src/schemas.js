@@ -1,18 +1,26 @@
 import mongoose from 'mongoose';
 
-const { Schema, SchemaTypes } = mongoose;
+const { Schema } = mongoose;
 
 export default {
   User: new Schema({
-    username: SchemaTypes.String,
-    email: SchemaTypes.String
+    username: String,
+    email: String
   }),
   Cart: new Schema({
-    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-    items: [{ type: mongoose.Schema.Types.Mixed }],
-    state: { type: SchemaTypes.String, required: true, enum: ['active', 'inactive'], default: 'active' }
+    user: { type: Schema.Types.ObjectId, ref: 'User' },
+    items: [{ type: Schema.Types.Mixed }],
+    state: {
+      type: String,
+      required: true,
+      enum: ['active', 'inactive'],
+      default: 'active'
+    }
   }),
   Order: new Schema({
-    name: SchemaTypes.String
+    cart: { type: Schema.Types.ObjectId, ref: 'Cart' },
+    user: { type: Schema.Types.ObjectId, ref: 'User' },
+    total: Number,
+    createdAt: Number
   })
 };

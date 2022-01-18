@@ -10,15 +10,15 @@ class App extends BaseApp {
         info: {
           title: `${this.getAppName()} microservice API`,
           version: this.env.npm_package_version,
-          description: 'Provides capability to support user authentication into the system.',
+          description: "Provides capability to handle user's shopping cart and user's order.",
           license: {
             name: 'MIT',
             url: 'https://github.com/0aps/art-marketplace/blob/main/LICENSE'
           },
           contact: {
-            name: '0aps',
-            url: 'https://github.com/0aps/',
-            email: 'six.aps@gmail.com'
+            name: 'Jessie Romero Pérez',
+            url: 'https://github.com/jesromper/',
+            email: 'jessieromeroperez@gmail.com'
           }
         },
         servers: [{
