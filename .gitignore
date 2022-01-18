@@ -111,3 +111,6 @@ dist
 
 # Kube
 kubertenes/secret.yml
+
+# VSCode
+.vscode/

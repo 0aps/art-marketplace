@@ -29,12 +29,7 @@ export function OrderList ({ orders, onViewItem }) {
             {orders.map(order =>
               <tr key={order.id}>
                 <th scope='row'>
-                  <a
-                    className='pointer'
-                    onClick={() => onViewItem(order)}
-                  >
-                    <span><i className='fa fa-eye' /></span>
-                  </a>
+                  <Link to={'/order/' + order.id}><i className='fa fa-eye' /></Link>
                 </th>
                 <td>
                   {order.id}
