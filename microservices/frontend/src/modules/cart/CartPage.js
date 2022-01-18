@@ -136,5 +136,6 @@ async function completeCheckout ({ setState, id, selectedPaymentMethod, items })
     }
   } catch (e) {
     toast.error(`Error al realizar la compra. ${e.message}`);
+    setState(state => ({ ...state, loaded: true }));
   }
 }
