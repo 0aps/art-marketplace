@@ -21,7 +21,8 @@
     "express": "^4.17.1",
     "http-status-codes": "^2.1.4",
     "moment": "^2.29.1",
-    "mongoose": "^6.0.15"
+    "mongoose": "^6.0.15",
+    "mongoose-to-swagger": "^1.4.0"
   },
   "devDependencies": {
     "jest": "^27.4.3",
