@@ -35,7 +35,7 @@ export function ArtworkPage () {
                   <CardImg
                     className='artwork-card-image'
                     alt='Card image cap'
-                    src='https://picsum.photos/318/180'
+                    src={state.artwork.defaultPicture?.path ?? 'https://picsum.photos/318/180'}
                     top
                   />
                 </Col>
@@ -82,7 +82,7 @@ export function ArtworkPage () {
               </Row>
             </Card>
             <div className='my-4'>
-              <h3>Otras obras del artista</h3>
+              {(state.recommended && state.recommended.length > 0) && <h3>Otras obras del artista</h3>}
               <ListArtwork artworks={state.recommended} onAddToCart={onAddToCart} />
             </div>
           </Col>
@@ -97,7 +97,12 @@ async function loadArtwork ({ id, setState }) {
   try {
     const artwork = await api.artwork.get(id);
     const { records: recommended } = await loadRecommended(artwork.user.id);
-    setState((state) => ({ ...state, artwork: artwork, recommended, loaded: true }));
+    setState((state) => ({
+      ...state,
+      artwork: artwork,
+      recommended: recommended.filter(r => r.id !== id),
+      loaded: true
+    }));
   } catch (e) {
     setState((state) => ({ ...state, loaded: true }));
     toast.error(`Error al cargar la obra. ${e.message}`);

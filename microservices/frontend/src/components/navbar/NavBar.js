@@ -2,13 +2,13 @@ import { Link } from 'react-router-dom';
 import {
   NavbarBrand, Navbar, Nav, NavItem, NavLink,
   UncontrolledDropdown, DropdownItem, DropdownMenu,
-  DropdownToggle, NavbarToggler, Collapse,
+  DropdownToggle, NavbarToggler, Collapse
 } from 'reactstrap';
 import { useStore } from '../../state/storeHooks';
 
 export function NavBar ({ user, logout, handleOpen }) {
   const { items } = useStore(({ cart }) => cart);
-  
+
   return (
     <Navbar
       color='dark'
