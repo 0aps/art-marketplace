@@ -17,6 +17,7 @@ class pdfCreation {
     const browser = await puppeteer.launch({
       headless: true,
       args: ['--no-sandbox', '--disable-dev-shm-usage']
+
     });
     const page = await browser.newPage();
     const options = {
@@ -34,6 +35,7 @@ class pdfCreation {
     await page.setContent(content);
     await page.emulateMediaType('screen');
     await page.pdf(options);
+
 
     await page.close();
     await browser.close();
