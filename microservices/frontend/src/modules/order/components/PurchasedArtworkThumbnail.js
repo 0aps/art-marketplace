@@ -1,7 +1,7 @@
-import { Badge, Button, Card, CardBody, CardImg, CardSubtitle, CardText, CardTitle, Row } from 'reactstrap';
+import { Badge, Card, CardBody, CardImg, CardSubtitle, CardText, CardTitle, Row } from 'reactstrap';
 import { Link } from 'react-router-dom';
 
-export function PurchasedArtworkThumbnail ({ artwork}) {
+export function PurchasedArtworkThumbnail ({ artwork }) {
   return (
     <Card className='grid-item'>
       <Link to={'/artwork/' + artwork.id}>

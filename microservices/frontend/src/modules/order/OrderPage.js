@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import api from '../../api';
 import { toast } from 'react-toastify';
-import { Badge, Button, Card, CardImg, Col, Container, Row } from 'reactstrap';
+import { Badge, Card, Col, Container, Row } from 'reactstrap';
 import { ListPurchasedArtwork } from './components/ListPurchasedArtworks';
 
 export function OrderPage () {
@@ -30,14 +30,6 @@ export function OrderPage () {
             <h1>Pedido #{state.order._id}</h1>
             <Card className='p-4'>
               <Row>
-                <Col md={4}>
-                  <CardImg
-                    className='artwork-card-image'
-                    alt='Card image cap'
-                    src='https://picsum.photos/318/180'
-                    top
-                  />
-                </Col>
                 <Col md={8}>
                   <h3 className='bold text-success'>Coste total: ${state.order.total.toFixed(2)}</h3>
                   <dl>
@@ -53,7 +45,10 @@ export function OrderPage () {
                 </Col>
               </Row>
             </Card>
-            
+            <div className='my-4'>
+              <h3>Obras incluidas en el pedido</h3>
+              <ListPurchasedArtwork artworks={state.artworks} />
+            </div>
           </Col>
         </Row>
       </Container>
@@ -65,18 +60,10 @@ async function loadOrder ({ id, setState }) {
   setState((state) => ({ ...state, loaded: false }));
   try {
     const order = await api.order.get(id);
-    //const artworks = await loadArtworks(order.cart);
-    //setState((state) => ({ ...state, order: order, artworks: artworks, loaded: true }));
-    setState((state) => ({ ...state, order: order, loaded: true }));
+    const artworks = order.cart.items;
+    setState((state) => ({ ...state, order: order, artworks: artworks, loaded: true }));
   } catch (e) {
     setState((state) => ({ ...state, loaded: true }));
     toast.error(`Error al cargar el pedido. ${e.message}`);
   }
-}
-
-async function loadArtworks (id) {
-  const cart = await api.cart.get(id);
-  const artworks = cart.items;
-
-  return artworks;
 }

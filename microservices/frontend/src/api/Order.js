@@ -14,7 +14,7 @@ class OrderAPI extends Base {
     const url = [this.base, '/', id].join('');
     return this.apiClient.get(url);
   }
-
+  
 }
 
 export default OrderAPI;
