@@ -1,4 +1,5 @@
 export default {
   defaultPerPage: 10,
-  defaultSort: ['createdAt', 'desc']
+  defaultSort: ['createdAt', 'desc'],
+  defaultBucket: 'artwork-marketplace'
 };

@@ -26,7 +26,7 @@ export function App () {
       {loaded && (
         <div className='d-flex flex-column min-vh-100'>
           <ToastContainer position='bottom-right' />
-          <Header user={user} logout={logout} showModal={showModal} handleOpen={handleOpen} handleClose={handleClose}/>
+          <Header user={user} logout={logout} showModal={showModal} handleOpen={handleOpen} handleClose={handleClose} />
           <main className='flex-fill'>
             <Routes>
               <Route
@@ -110,11 +110,11 @@ async function load () {
 
 const handleClose = () => {
   store.dispatch(toggleModal());
-}
+};
 
 const handleOpen = () => {
   store.dispatch(showModal());
-}
+};
 
 async function logout () {
   localStorage.removeItem('token');

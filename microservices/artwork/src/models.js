@@ -12,7 +12,8 @@ class ArtworkModel {
       price: this.price,
       category: this.category && this.category.toClient ? this.category.toClient() : this.category,
       createdAt: this.createdAt,
-      pictures: this.pictures
+      pictures: this.pictures,
+      defaultPicture: this.pictures?.shift() ?? ''
     };
   }
 }

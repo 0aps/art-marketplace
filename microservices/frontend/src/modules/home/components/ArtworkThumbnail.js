@@ -8,7 +8,7 @@ export function ArtworkThumbnail ({ artwork, onAddToCart }) {
         <CardImg
           className='artwork-card-image'
           alt='Card image cap'
-          src='https://picsum.photos/318/180'
+          src={artwork.defaultPicture?.path ?? 'https://picsum.photos/318/180'}
           top
         />
       </Link>

@@ -23,7 +23,7 @@ export function PaymentMethodList ({ paymentMethods, onRemoveItem }) {
           onAddPaymentMethod={(params) => onAddPaymentMethod({ ...params, setState })}
           toggle={() => togglePaymentMethodModal({ setState })}
         />
-      </Elements>}
+                          </Elements>}
       {state.paymentMethods.length === 0 &&
         <h4>No tienes métodos de pagos.</h4>}
       {state.paymentMethods.length > 0 &&
@@ -69,11 +69,11 @@ export function PaymentMethodList ({ paymentMethods, onRemoveItem }) {
         <Col md={12}>
           <h6><a className='pointer' onClick={() => togglePaymentMethodModal({ setState })}>
             <i className='fa fa-plus-circle' /> Agregar método de pago
-          </a>
+              </a>
           </h6>
         </Col>
       </Row>
-      </>
+    </>
     : <div className='loader' />);
 }
 
@@ -93,7 +93,7 @@ async function onAddPaymentMethod ({ event, elements, stripe, setState }) {
     const paymentMethods = await api.payment.getPaymentMethods();
     setState((state) => ({ ...state, paymentMethods, loaded: true, showModal: false }));
   } catch (e) {
-    toast.error(`Error al cagar la información del usuario. ${e.message}`);
+    toast.error(`Error al cagar los métodos de pago. ${e.message}`);
     setState((state) => ({ ...state, loaded: true }));
   }
 }
