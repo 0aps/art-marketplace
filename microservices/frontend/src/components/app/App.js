@@ -4,7 +4,7 @@ import api from '../../api';
 import { useStoreWithInitializer } from '../../state/storeHooks';
 import { Footer } from '../footer/Footer';
 import { Header } from '../header/Header';
-import { endLoad, loadUser, logoutUser, showModal, toggleModal } from './App.slice';
+import { endLoad, loadUser, logoutUser } from './App.slice';
 import { HomePage } from '../../modules/home/HomePage';
 import { LoginPage } from '../../modules/login/LoginPage';
 import { RegisterPage } from '../../modules/login/RegisterPage';
@@ -17,7 +17,7 @@ import { CartPage } from '../../modules/cart/CartPage';
 import { ProfilePage } from '../../modules/profile/ProfilePage';
 
 export function App () {
-  const { loaded, user, showModal } = useStoreWithInitializer(({ app }) => app, load);
+  const { loaded, user } = useStoreWithInitializer(({ app }) => app, load);
 
   const userIsLogged = user != null;
 
@@ -26,7 +26,7 @@ export function App () {
       {loaded && (
         <div className='d-flex flex-column min-vh-100'>
           <ToastContainer position='bottom-right' />
-          <Header user={user} logout={logout} showModal={showModal} handleOpen={handleOpen} handleClose={handleClose}/>
+          <Header user={user} logout={logout} />
           <main className='flex-fill'>
             <Routes>
               <Route
@@ -106,14 +106,6 @@ async function load () {
   } catch {
     store.dispatch(endLoad());
   }
-}
-
-const handleClose = () => {
-  store.dispatch(toggleModal());
-}
-
-const handleOpen = () => {
-  store.dispatch(showModal());
 }
 
 async function logout () {

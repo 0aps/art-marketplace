@@ -15,7 +15,7 @@ const ApiSingleton = () => {
     cart: new CartAPI({ apiClient: api }),
     payment: new PaymentAPI({ apiClient: api }),
     order: new OrderAPI({ apiClient: api }),
-    certificate: new CertificateAPI({ apiClient: api})
+    certificate: new CertificateAPI({ apiClient: api })
   };
 };
 

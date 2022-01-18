@@ -66,5 +66,7 @@ function getInputAddon (type) {
       return <i className='fa fa-envelope' aria-hidden='true' />;
     case 'tel':
       return <i className='fa fa-phone' aria-hidden='true' />;
+    case 'number':
+      return <i className='fa fa-sort-numeric-asc' aria-hidden='true' />;
   }
 }

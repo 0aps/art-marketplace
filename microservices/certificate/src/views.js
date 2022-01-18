@@ -1,4 +1,4 @@
-import {RecordNotFound} from 'art-marketplace-common';
+import { RecordNotFound } from 'art-marketplace-common';
 import { Certificate } from './models.js';
 import { StatusCodes } from 'http-status-codes';
 import pdfCreation from './pdfCreation.js';
@@ -29,7 +29,7 @@ export default [{
           artCreationDate: data.artCreationDate,
           categoryName: data.categoryName,
           username: data.username,
-          certificatePath: './src/documents/' + artName + '.pdf',
+          certificatePath: './src/documents/' + data.artName + '.pdf',
           createdAt: moment()
         });
 
@@ -57,7 +57,7 @@ export default [{
         delete: ['admin']
       },
       methods: {
-        get: async (req, res) => {
+        get: async (req, res, next) => {
           try {
             const record = await Certificate.findById(req.params.certificateId);
 
@@ -74,7 +74,7 @@ export default [{
             res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(e);
           }
         },
-        put: async (req, res) => {
+        put: async (req, res, next) => {
           const data = req.body;
           const certificateID = req.params.certificateID;
 
@@ -82,24 +82,24 @@ export default [{
             res.sendStatus(StatusCodes.BAD_REQUEST);
           }
 
-          const record = await Certificate.findById(certificateId);
+          const record = await Certificate.findById(certificateID);
           if (!record) {
             return next(new RecordNotFound());
           }
 
           pdfCreation.createPDF(data);
 
-          record.artName = data.artName,
-          record.artDescription = data.artDescription,
-          record.artCreationDate = data.artCreationDate,
-          record.categoryName = data.categoryName,
-          record.username = data.username,
+          record.artName = data.artName;
+          record.artDescription = data.artDescription;
+          record.artCreationDate = data.artCreationDate;
+          record.categoryName = data.categoryName;
+          record.username = data.username;
 
           await record.save();
 
           res.json(record.toClient());
         },
-        delete: async (req, res) => {
+        delete: async (req, res, next) => {
           try {
             const record = await Certificate.findById(req.params.certificateId);
 
@@ -107,7 +107,7 @@ export default [{
               return next(new RecordNotFound());
             }
 
-            fs.unlink(record.certificatePath, function (err) {
+            fs.unlink(record.certificatePath, async function (err) {
               if (err) {
                 res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(err);
               } else {

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import api from '../../../api';
 import { toast } from 'react-toastify';
-import { Card, Col, Container, Nav, NavItem, NavLink, Row, TabContent, Table, TabPane } from 'reactstrap';
+import { Card, Col, Container, Nav, NavItem, NavLink, Row, TabContent, TabPane } from 'reactstrap';
 import classNames from 'classnames';
 import { OrderList } from './OrdersList';
 import { PaymentMethodList } from './PaymentMethodList';
