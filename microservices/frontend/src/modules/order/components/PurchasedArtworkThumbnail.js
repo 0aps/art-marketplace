@@ -3,12 +3,12 @@ import { Link } from 'react-router-dom';
 
 export function PurchasedArtworkThumbnail ({ artwork }) {
   return (
-    <Card className='grid-item'>
+    <Card className='grid-item card-size'>
       <Link to={'/artwork/' + artwork.id}>
         <CardImg
           className='artwork-card-image'
           alt='Card image cap'
-          src='https://picsum.photos/318/180'
+          src={artwork.defaultPicture?.path ?? 'https://picsum.photos/318/180'}
           top
         />
       </Link>

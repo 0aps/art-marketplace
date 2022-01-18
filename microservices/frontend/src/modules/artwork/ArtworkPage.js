@@ -81,7 +81,7 @@ export function ArtworkPage () {
                 </Col>
               </Row>
             </Card>
-            <div className='my-4'>
+            <div id='recommended' className='my-4'>
               {(state.recommended && state.recommended.length > 0) && <h3>Otras obras del artista</h3>}
               <ListArtwork artworks={state.recommended} onAddToCart={onAddToCart} />
             </div>
@@ -97,6 +97,7 @@ async function loadArtwork ({ id, setState }) {
   try {
     const artwork = await api.artwork.get(id);
     const { records: recommended } = await loadRecommended(artwork.user.id);
+    debugger;
     setState((state) => ({
       ...state,
       artwork: artwork,

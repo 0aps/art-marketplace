@@ -45,7 +45,7 @@ export function OrderPage () {
                 </Col>
               </Row>
             </Card>
-            <div className='my-4'>
+            <div id='cartOrder' className='my-4'>
               <h3>Obras incluidas en el pedido</h3>
               <ListPurchasedArtwork artworks={state.artworks} />
             </div>

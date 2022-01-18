@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 export function ArtworkThumbnail ({ artwork, onAddToCart }) {
   return (
-    <Card className='grid-item'>
+    <Card className='grid-item card-size'>
       <Link to={'/artwork/' + artwork.id}>
         <CardImg
           className='artwork-card-image'
