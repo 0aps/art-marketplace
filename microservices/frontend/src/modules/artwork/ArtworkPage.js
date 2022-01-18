@@ -11,6 +11,7 @@ export function ArtworkPage () {
   const [state, setState] = useState({
     loaded: false,
     artwork: null,
+    certificate: null,
     recommended: []
   });
 
@@ -71,6 +72,16 @@ export function ArtworkPage () {
                       </Badge>
                     </dd>
                   </dl>
+                  {state.certificate === null &&
+                        <Button
+                        className='btn btn-sm btn-success float-end'
+                        onClick={() => createCertificate(state.artwork, setState)}
+                      >
+                        <h5><i className='fa fa-cart-plus' aria-hidden='true'> Crear certificado</i>
+                        </h5>
+                      </Button>}
+                      {state.certificate !== null &&
+                        <h4>{state.certificate.artName} </h4>}
                   <Button
                     className='btn btn-sm btn-success float-end'
                     onClick={() => onAddToCart(state.artwork)}
@@ -98,10 +109,12 @@ async function loadArtwork ({ id, setState }) {
     const artwork = await api.artwork.get(id);
     const { records: recommended } = await loadRecommended(artwork.user.id);
     debugger;
+    const certificate = await loadCertificate(artwork.name);
     setState((state) => ({
       ...state,
       artwork: artwork,
       recommended: recommended.filter(r => r.id !== id),
+      certificate: certificate,
       loaded: true
     }));
   } catch (e) {
@@ -115,4 +128,46 @@ async function loadRecommended (userId) {
     user: userId,
     perPage: 3
   });
+}
+
+async function loadCertificate (artworkName) {
+  try {
+    const certificates = await api.certificate.list();
+    const certificate = null;
+
+    certificates.forEach(element => {
+      if(element.artName == artworkName) {
+        certificate = element;
+      }
+    });
+
+    return certificate;
+
+  } catch (error) {
+    return null;
+  }
+  
+}
+
+async function createCertificate (artwork, setState) {
+  try {
+    const data = [];
+    data.artName = artwork.name;
+    data.artDescription = artwork.description;
+    data.artCreationDate = artwork.createdAt;
+    data.categoryName = artwork.category.name;
+    data.username = artwork.user.username;
+
+    await api.certificate.create(data);
+
+    const id = artwork.id;
+
+    toast.success(`Certificado creado exitosamente.`);
+    await loadArtwork({ id, setState });
+
+  } catch (error) {
+    toast.error(`Error al crear el certificado. ${error.message}`);
+    setState((state) => ({ ...state, loaded: true }));
+  }
+
 }

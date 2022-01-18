@@ -5,6 +5,11 @@ class CertificateAPI extends Base {
     super(params);
     this.base = 'certificates';
   }
+  
+  create (payload) {
+    return this.apiClient.post(this.base, payload);
+  }
+
 }
 
 export default CertificateAPI;
