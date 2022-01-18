@@ -1,7 +1,8 @@
 import {
   createPayment,
   getPaymentMethods,
-  createPaymentMethod
+  createPaymentMethod,
+  deletePaymentMethod
 } from './controller/payment_controller.js';
 
 export default [{
@@ -15,6 +16,14 @@ export default [{
       methods: {
         get: getPaymentMethods,
         post: createPaymentMethod
+      },
+      children: {
+        item: {
+          url: '/:cardId',
+          methods: {
+            delete: deletePaymentMethod
+          }
+        }
       }
     }
   }
