@@ -90,36 +90,6 @@ export default [{
           }
         }
       }
-    },
-    customer: {
-      url: '/customer',
-      children: {
-        paymentMethod: {
-          url: '/payment_methods',
-          methods: {
-            post: createPaymentMethod
-          },
-          children: {
-            item: {
-              url: '/:customerId',
-              methods: {
-                get: getCustomerPaymentMethods
-              }
-            }
-          }
-        }
-      }
-    },
-    paymentIntent: {
-      url: '/payment_intent',
-      children: {
-        item: {
-          url: '/',
-          methods: {
-            post: createPaymentIntent
-          }
-        }
-      }
     }
   }
 }];
