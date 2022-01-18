@@ -14,7 +14,10 @@ const compile = async function (templateName, data) {
 
 class pdfCreation {
   static async createPDF (data) {
-    const browser = await puppeteer.launch({ headless: true });
+    const browser = await puppeteer.launch({
+      headless:false,
+      args: ["--no-sandbox"]
+    });
     const page = await browser.newPage();
     const options = {
       path: './src/documents/' + data.artName + '.pdf',

@@ -17,7 +17,7 @@ export default [{
     post: async (req, res) => {
       const data = req.body;
       if (!(data.artName && data.artDescription && data.artCreationDate && data.categoryName && data.username)) {
-        res.sendStatus(StatusCodes.BAD_REQUEST);
+        return res.sendStatus(StatusCodes.BAD_REQUEST);
       }
 
       pdfCreation.createPDF(data);
@@ -42,8 +42,7 @@ export default [{
     },
     get: async (req, res) => {
       const records = await Certificate.find({});
-      res.sendStatus(StatusCodes.OK);
-      res.json(records.map(record => record.toClient()));
+      res.status(StatusCodes.OK).json(records.map(record => record.toClient()));
     }
   },
   children: {
