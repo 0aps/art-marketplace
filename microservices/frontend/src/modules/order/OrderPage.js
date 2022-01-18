@@ -37,7 +37,6 @@ export function OrderPage () {
                     <dd>
                       <Badge
                         color='info mx-3'
-                        href='#'
                       > {(new Date(state.order.createdAt * 1000).toLocaleDateString())}
                       </Badge>
                     </dd>

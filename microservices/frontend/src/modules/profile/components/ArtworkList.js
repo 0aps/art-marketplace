@@ -22,6 +22,9 @@ export function ArtworkList ({ artworks, onEditItem, onRemoveItem }) {
               <th>
                 Creada en
               </th>
+              <th>
+                Certificado
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -51,6 +54,9 @@ export function ArtworkList ({ artworks, onEditItem, onRemoveItem }) {
                 </td>
                 <td>
                   {item.category.name}
+                </td>
+                <td>
+                  {(new Date(item.createdAt * 1000).toLocaleDateString())}
                 </td>
                 <td>
                   {(new Date(item.createdAt * 1000).toLocaleDateString())}
