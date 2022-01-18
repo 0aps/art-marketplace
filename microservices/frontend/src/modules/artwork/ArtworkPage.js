@@ -5,8 +5,10 @@ import { toast } from 'react-toastify';
 import { Badge, Button, Card, CardImg, Col, Container, Row } from 'reactstrap';
 import { ListArtwork } from '../home/components/ListArtwork';
 import { onAddToCart } from '../home/components/Dashboard';
+import { store } from '../../state/store';
 
 export function ArtworkPage () {
+  const { app: { user } } = store.getState();
   const params = useParams();
   const [state, setState] = useState({
     loaded: false,
@@ -72,28 +74,25 @@ export function ArtworkPage () {
                       </Badge>
                     </dd>
                   </dl>
-                  {state.certificate == null &&
-                        <Button
-                        className='btn btn-sm float-end'
-                        onClick={() => createCertificate(state.artwork, setState)}
-                      >
-                        <h5>Crear certificado</h5>
-                      </Button>
-                  }
+                  {(user != null && user.role === 'artist' && state.certificate == null) &&
+                    <Button
+                      className='btn btn-sm btn-primary float-end'
+                      onClick={() => createCertificate(state.artwork, setState)}
+                    >
+                      <h5><i className='fa fa fa-file' aria-hidden='true'> Crear certificado</i></h5>
+                    </Button>}
                   {state.certificate != null &&
-                      <Button
-                      className='btn btn-sm float-end'
+                    <Button
+                      className='btn btn-sm btn-primary float-end'
                       onClick={() => showCertificate(state.artwork, state.certificate.id, setState)}
                     >
-                      <h5>Ver certificado</h5>
-                    </Button>
-                  }
+                      <h5><i className='fa fa fa-file' aria-hidden='true'> Ver certificado</i></h5>
+                    </Button>}
                   <Button
-                    className='btn btn-sm btn-success float-end'
+                    className='btn btn-sm btn-success float-end mx-3'
                     onClick={() => onAddToCart(state.artwork)}
                   >
-                    <h5><i className='fa fa-cart-plus' aria-hidden='true'> Añadir al carrito</i>
-                    </h5>
+                    <h5><i className='fa fa-cart-plus' aria-hidden='true'> Añadir al carrito</i></h5>
                   </Button>
                 </Col>
               </Row>
@@ -115,23 +114,14 @@ async function loadArtwork ({ id, setState }) {
     const artwork = await api.artwork.get(id);
     const { records: recommended } = await loadRecommended(artwork.user.id);
     const certificate = await loadCertificate(artwork.name);
-    debugger;
-    if(certificate == null){
-      setState((state) => ({
-        ...state,
-        artwork: artwork,
-        recommended: recommended.filter(r => r.id !== id),
-        loaded: true
-      }));
-    } else {
-      setState((state) => ({
-        ...state,
-        artwork: artwork,
-        recommended: recommended.filter(r => r.id !== id),
-        certificate: certificate,
-        loaded: true
-      }));
-    }
+
+    setState((state) => ({
+      ...state,
+      artwork: artwork,
+      recommended: recommended.filter(r => r.id !== id),
+      certificate: certificate,
+      loaded: true
+    }));
   } catch (e) {
     setState((state) => ({ ...state, loaded: true }));
     toast.error(`Error al cargar la obra. ${e.message}`);
@@ -148,21 +138,19 @@ async function loadRecommended (userId) {
 async function loadCertificate (artworkName) {
   try {
     const certificates = await api.certificate.list();
-    var certificate = null;
+    let certificate = null;
 
     certificates.forEach(element => {
-      if(element.artName == artworkName) {
+      if (element.artName === artworkName) {
         certificate = element;
       }
     });
 
     return certificate;
-
   } catch (error) {
     toast.error(`Error al cargar el certificado. ${error.message}`);
     return null;
   }
-  
 }
 
 async function createCertificate (artwork, setState) {
@@ -174,34 +162,22 @@ async function createCertificate (artwork, setState) {
       categoryName: artwork.category.name,
       username: artwork.user.username
     };
-
     await api.certificate.create(data);
 
-    const id = artwork.id;
-
-    toast.success(`Certificado creado exitosamente.`);
-    await loadArtwork({ id, setState });
-
+    toast.success('Certificado creado exitosamente.');
+    await loadArtwork({ id: artwork.id, setState });
   } catch (error) {
     toast.error(`Error al crear el certificado. ${error.message}`);
     setState((state) => ({ ...state, loaded: true }));
   }
-
 }
 
 async function showCertificate (artwork, certificateId, setState) {
   try {
-
-    await api.certificate.get(certificateId);
-
-    const id = artwork.id;
-
-    toast.success(`Certificado visualizado exitosamente.`);
-    await loadArtwork({ id, setState });
-
+    window.open(`api/v1/certificates/${certificateId}`, '_blank', 'fullscreen=yes');
+    toast.success('Certificado visualizado exitosamente.');
   } catch (error) {
     toast.error(`Error al cargar el certificado. ${error.message}`);
     setState((state) => ({ ...state, loaded: true }));
   }
-
 }
