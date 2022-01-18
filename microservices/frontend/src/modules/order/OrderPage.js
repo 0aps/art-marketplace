@@ -37,7 +37,6 @@ export function OrderPage () {
                     <dd>
                       <Badge
                         color='info mx-3'
-                        href='#'
                       > {(new Date(state.order.createdAt * 1000).toLocaleDateString())}
                       </Badge>
                     </dd>
@@ -45,7 +44,7 @@ export function OrderPage () {
                 </Col>
               </Row>
             </Card>
-            <div className='my-4'>
+            <div id='cartOrder' className='my-4'>
               <h3>Obras incluidas en el pedido</h3>
               <ListPurchasedArtwork artworks={state.artworks} />
             </div>

@@ -19,7 +19,7 @@ export async function createPayment (req, res, next) {
   try {
     const paymentIntent = await stripe.paymentIntents.create({
       currency: 'EUR',
-      amount: amount,
+      amount: amount.toFixed(2) * 100,
       payment_method: paymentMethodId,
       customer: customerStripeId
     });

@@ -13,6 +13,7 @@ services:
 
   certificate:
     container_name: certificate
+    privileged: true
     build:
       context: microservices/certificate
       dockerfile: Dockerfile

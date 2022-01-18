@@ -17,7 +17,7 @@ export default [{
     post: async (req, res) => {
       const data = req.body;
       if (!(data.artName && data.artDescription && data.artCreationDate && data.categoryName && data.username)) {
-        res.sendStatus(StatusCodes.BAD_REQUEST);
+        return res.sendStatus(StatusCodes.BAD_REQUEST);
       }
 
       pdfCreation.createPDF(data);
@@ -42,8 +42,7 @@ export default [{
     },
     get: async (req, res) => {
       const records = await Certificate.find({});
-      res.sendStatus(StatusCodes.OK);
-      res.json(records.map(record => record.toClient()));
+      res.status(StatusCodes.OK).json(records.map(record => record.toClient()));
     }
   },
   children: {
@@ -60,15 +59,12 @@ export default [{
         get: async (req, res, next) => {
           try {
             const record = await Certificate.findById(req.params.certificateId);
-
             if (!record) {
               return next(new RecordNotFound());
             }
 
             const rs = fs.createReadStream('./' + record.certificatePath);
-            res.sendStatus(StatusCodes.OK);
-            res.json(record.toClient());
-            res.setHeader('Content-Disposition', 'attachment; ' + record.artName + '.pdf');
+            res.setHeader('Content-Disposition', 'inline; ' + record.artName + '.pdf');
             rs.pipe(res);
           } catch (e) {
             res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(e);
