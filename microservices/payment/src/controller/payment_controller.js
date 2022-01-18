@@ -104,6 +104,17 @@ export async function createPaymentMethod (req, res) {
   }
 }
 
+export async function deletePaymentMethod (req, res) {
+  const { stripeAccount: customerId } = await getCurrentUser(req);
+
+  try {
+    await stripe.customers.deleteSource(customerId, req.params.cardId);
+    res.sendStatus(StatusCodes.NO_CONTENT);
+  } catch (e) {
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(e.message);
+  }
+}
+
 async function getCurrentUser (req) {
   return User.findById(req.app.locals.user.id);
 }

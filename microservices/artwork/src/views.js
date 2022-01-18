@@ -118,6 +118,39 @@ export default [{
             res.status(StatusCodes.INTERNAL_SERVER_ERROR).json(e);
           }
         },
+        patch: async (req, res, next) => {
+          try {
+            const artworkId = req.params.artworkId;
+            const payload = req.body;
+
+            const record = await Artwork.findById(artworkId);
+            if (!record) {
+              return next(new RecordNotFound());
+            }
+
+            if (payload.name) {
+              record.name = payload.name;
+            }
+
+            if (payload.description) {
+              record.description = payload.description;
+            }
+
+            if (payload.price) {
+              record.price = payload.price;
+            }
+
+            if (payload.category) {
+              record.category = payload.category;
+            }
+
+            await record.save();
+
+            res.json(record.toClient());
+          } catch (e) {
+            res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(e.message);
+          }
+        },
         delete: async (req, res, next) => {
           try {
             const record = await Artwork.findById(req.params.artworkId);

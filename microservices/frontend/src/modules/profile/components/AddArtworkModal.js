@@ -2,18 +2,19 @@ import { Button, CardImg, Label, Modal, ModalBody, ModalFooter, ModalHeader } fr
 import { useForm } from '../../../hooks/useForm';
 import FieldGroup from '../../../components/field-group/FieldGroup';
 
-export function AddArtworkModal ({ isOpen, toggle, categories, onAddArtwork }) {
+export function AddArtworkModal ({ isOpen, toggle, categories, onAddArtwork, item }) {
   const { state, onSubmit, onInputChange } = useForm({
     name: 'artwork',
     onSubmit: onAddArtwork,
     initState: {
       loaded: true,
       model: {
-        image: null,
-        name: '',
-        description: '',
-        price: 0,
-        category: ''
+        id: item?.id,
+        image: item?.defaultPicture?.path ?? null,
+        name: item?.name ?? '',
+        description: item?.description ?? '',
+        price: item?.price ?? '',
+        category: item?.category?.id ?? ''
       },
       error: {}
     }
@@ -25,14 +26,14 @@ export function AddArtworkModal ({ isOpen, toggle, categories, onAddArtwork }) {
       toggle={toggle}
     >
       <ModalHeader toggle={toggle}>
-        <i className='fa fa-plus-circle' /> Agregar una obra
+        <i className='fa fa-plus-circle' /> {state.model.id ? 'Actualizar' : 'Agregar'} una obra
       </ModalHeader>
       <ModalBody>
         <form className='form' name='artwork'>
           <div>
             {state.model.image && <CardImg
               alt='Card image cap'
-              src={URL.createObjectURL(state.model.image)}
+              src={typeof state.model.image === 'string' ? state.model.image : URL.createObjectURL(state.model.image)}
               top
                                   />}
             <FieldGroup
@@ -40,7 +41,7 @@ export function AddArtworkModal ({ isOpen, toggle, categories, onAddArtwork }) {
               name='image'
               type='file'
               label='Imagen de la obra'
-              required
+              required={!state.model.id}
               onChange={onInputChange}
               help={state.error.image}
             />
@@ -49,6 +50,7 @@ export function AddArtworkModal ({ isOpen, toggle, categories, onAddArtwork }) {
             id='name'
             name='name'
             type='text'
+            value={state.model.name}
             placeholder='Título de mi obra'
             required
             onChange={onInputChange}
@@ -58,6 +60,7 @@ export function AddArtworkModal ({ isOpen, toggle, categories, onAddArtwork }) {
             id='description'
             name='description'
             type='text'
+            value={state.model.description}
             placeholder='Descripción de mi obra'
             required
             onChange={onInputChange}
@@ -67,6 +70,7 @@ export function AddArtworkModal ({ isOpen, toggle, categories, onAddArtwork }) {
             id='price'
             name='price'
             type='number'
+            value={state.model.price}
             min='1'
             step='any'
             placeholder='Precio de mi obra'
@@ -100,7 +104,7 @@ export function AddArtworkModal ({ isOpen, toggle, categories, onAddArtwork }) {
           color='success'
           onClick={onSubmit}
         >
-          Agregar
+          {state.model.id ? 'Actualizar' : 'Agregar'}
         </Button>
       </ModalFooter>
     </Modal>

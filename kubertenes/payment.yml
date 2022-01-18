@@ -37,6 +37,16 @@ spec:
                 secretKeyRef:
                   name: artwork-secret
                   key: SENDGRID_API_KEY
+            - name: STRIPE_PUBLISHABLE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: artwork-secret
+                  key: STRIPE_PUBLISHABLE_KEY
+            - name: STRIPE_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: artwork-secret
+                  key: STRIPE_SECRET_KEY
 ---
 apiVersion: v1
 kind: Service

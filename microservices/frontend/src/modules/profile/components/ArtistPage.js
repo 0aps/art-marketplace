@@ -21,7 +21,8 @@ export function ArtistPage ({ user }) {
     loaded: false,
     showModal: false,
     artworks: [],
-    categories: []
+    categories: [],
+    selectedItem: {}
   });
 
   useEffect(() => {
@@ -33,6 +34,7 @@ export function ArtistPage ({ user }) {
       {state.showModal && <AddArtworkModal
         isOpen={state.showModal}
         categories={state.categories}
+        item={state.selectedItem}
         onAddArtwork={(params) => onAddItem({ ...params, setState, user })}
         toggle={() => toggleAddArtworkModal({ setState })}
                           />}
@@ -57,7 +59,7 @@ export function ArtistPage ({ user }) {
                     <Col md={12}>
                       <ArtworkList
                         artworks={state.artworks}
-                        onEditItem={onEditItem}
+                        onEditItem={(item) => onEditItem({ item, setState })}
                         onRemoveItem={(item) => onRemoveItem({ user, setState, item })}
                       />
                     </Col>
@@ -95,14 +97,24 @@ async function load ({ user, setState }) {
 }
 
 function toggleAddArtworkModal ({ setState }) {
-  setState(state => ({ ...state, showModal: !state.showModal }));
+  setState(state => ({
+    ...state,
+    showModal: !state.showModal,
+    selectedItem: !state.showModal ? {} : state.selectedItem
+  }));
 }
 
 async function onAddItem ({ user, state, setState }) {
   setState((state) => ({ ...state, loaded: false }));
   try {
-    await api.artwork.create(getFormData({ ...state.model, user: user.id }));
-    setState((state) => ({ ...state, showModal: false }));
+    if (state.model.id) {
+      await api.artwork.update(state.model.id, getFormData({ ...state.model, user: user.id }));
+    } else {
+      await api.artwork.create(getFormData({ ...state.model, user: user.id }));
+    }
+
+    toast.success(`Obra ${state.model.id ? 'actualizada' : 'creada'} exitosamente.`);
+    setState((state) => ({ ...state, showModal: false, selectedItem: {} }));
     await load({ user, setState });
   } catch (e) {
     toast.error(`Error al crear la obra de arte. ${e.message}`);
@@ -110,8 +122,8 @@ async function onAddItem ({ user, state, setState }) {
   }
 }
 
-async function onEditItem ({ item }) {
-
+async function onEditItem ({ item, setState }) {
+  setState((state) => ({ ...state, selectedItem: item, showModal: true }));
 }
 
 async function onRemoveItem ({ user, setState, item }) {
