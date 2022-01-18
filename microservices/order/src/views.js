@@ -1,20 +1,21 @@
-import { InvalidRequest, RecordNotFound } from 'art-marketplace-common';
-import { StatusCodes } from 'http-status-codes';
-import { Cart, Order } from './models.js';
+import { listAllOrder, readAnOrder } from "./controller/order_controller.js";
+import { InvalidRequest, RecordNotFound } from "art-marketplace-common";
+import { StatusCodes } from "http-status-codes";
+import { Cart } from "./models.js";
 
 export default [
   {
-    url: '/cart',
+    url: "/cart",
     methods: {
       get: async (req, res) => {
         const user = req.app.locals.user;
 
         try {
-          let cart = await Cart.findOne({ user: user.id, state: 'active' });
+          let cart = await Cart.findOne({ user: user.id, state: "active" });
           if (!cart) {
             cart = new Cart({
               user: user.id,
-              items: []
+              items: [],
             });
             await cart.save();
           }
@@ -23,11 +24,11 @@ export default [
         } catch (e) {
           res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(e.message);
         }
-      }
+      },
     },
     children: {
       item: {
-        url: '/:cartId',
+        url: "/:cartId",
         methods: {
           patch: async (req, res, next) => {
             const cartId = req.params.cartId;
@@ -39,7 +40,11 @@ export default [
                 return next(new RecordNotFound());
               }
               if (!item) {
-                return next(new InvalidRequest('Debes espeficiar una obra para agregar al carrito.'));
+                return next(
+                  new InvalidRequest(
+                    "Debes espeficiar una obra para agregar al carrito."
+                  )
+                );
               }
 
               cart.items.push(item);
@@ -49,11 +54,11 @@ export default [
             } catch (e) {
               res.status(StatusCodes.INTERNAL_SERVER_ERROR).send(e.message);
             }
-          }
+          },
         },
         children: {
           item: {
-            url: '/:artworkId',
+            url: "/:artworkId",
             methods: {
               delete: async (req, res, next) => {
                 const cartId = req.params.cartId;
@@ -66,46 +71,36 @@ export default [
 
                 const hasItem = await Cart.hasItem(artworkId);
                 if (!hasItem) {
-                  return next(new InvalidRequest('La obra no está en el carrito.'));
+                  return next(
+                    new InvalidRequest("La obra no está en el carrito.")
+                  );
                 }
 
-                cart.items = cart.items.filter($item => $item.id !== artworkId);
+                cart.items = cart.items.filter(
+                  ($item) => $item.id !== artworkId
+                );
                 await cart.save();
 
                 res.sendStatus(StatusCodes.NO_CONTENT);
-              }
-            }
-          }
-        }
-      }
-    }
+              },
+            },
+          },
+        },
+      },
+    },
   },
   {
-    url: '/orders',
+    url: "/orders",
     methods: {
-      get: async (req, res) => {
-        const records = await Order.find({});
-        res.json(records);
-      },
-      post: async (req, res) => {
-        const artwork = new Order({
-          name: req.body.name
-        });
-
-        await artwork.save();
-        res.sendStatus(StatusCodes.OK);
-      }
+      get: listAllOrder,
     },
     children: {
       item: {
-        url: '/:orderId',
+        url: "/:orderId",
         methods: {
-          get: (req, res, next) => {
-            res.json({
-              test: 'mychild'
-            });
-          }
-        }
-      }
-    }
-  }];
+          get: readAnOrder,
+        },
+      },
+    },
+  },
+];
