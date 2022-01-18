@@ -21,7 +21,7 @@ class pdfCreation {
         "--disable-dev-shm-usage",
         "--disable-setuid-sandbox",
         "--no-sandbox",
-    ]
+      ]
     });
     const page = await browser.newPage();
     const options = {
