@@ -28,7 +28,7 @@ describe('Certificate API endpoints', () => {
     expect(0).toBe(0);
   });
 
-  describe.skip('POST method endpoints', () => {
+  describe('POST method endpoints', () => {
     test('should return an error if payload is not correct', async () => {
       const response = await agent.post(base).send({});
       expect(response.statusCode).toBe(StatusCodes.BAD_REQUEST);
@@ -42,7 +42,7 @@ describe('Certificate API endpoints', () => {
     });
   });
 
-  describe.skip('GET all certificates endpoints', () => {
+  describe('GET all certificates endpoints', () => {
     test('Should return the lists of certificates', async () => {
       const response = await agent.get(base);
       expect(response.statusCode).toBe(StatusCodes.OK);
@@ -50,7 +50,7 @@ describe('Certificate API endpoints', () => {
     });
   });
 
-  describe.skip('GET one certificate endpoints', () => {
+  describe('GET one certificate endpoints', () => {
     test('Should return an error if certificateId is not valid', async () => {
       const response = await agent.get(`${base}/12`);
       expect(response.statusCode).toBe(StatusCodes.NOT_FOUND);
@@ -63,7 +63,7 @@ describe('Certificate API endpoints', () => {
     });
   });
 
-  describe.skip('PUT method endpoints', () => {
+  describe('PUT method endpoints', () => {
     test('Should return an error if certificateId is not valid', async () => {
       const response = await agent.put(`${base}/12`).send(certificateInfo);
       expect(response.statusCode).toBe(StatusCodes.NOT_FOUND);
@@ -82,7 +82,7 @@ describe('Certificate API endpoints', () => {
     });
   });
 
-  describe.skip('DELETE method endpoints', () => {
+  describe('DELETE method endpoints', () => {
     test('Should return an error if certificateId is not valid', async () => {
       const response = await agent.put(`${base}/12`).send(certificateInfo);
       expect(response.statusCode).toBe(StatusCodes.NOT_FOUND);
